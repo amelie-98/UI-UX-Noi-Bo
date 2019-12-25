@@ -21,9 +21,6 @@ function App() {
             <li>
               <Link to="/profile">Profile</Link>
             </li>
-            <li>
-              <Link to="/dashboard">Dashboard</Link>
-            </li>
           </ul>
           <hr />
           <Switch>
@@ -33,20 +30,9 @@ function App() {
             <Route path="/profile">
               <Profile />
             </Route>
-            <Route path="/dashboard">
-              <Dashboard />
-            </Route>
           </Switch>
         </div>
       </Router>
-    </div>
-  );
-}
-
-function Dashboard() {
-  return (
-    <div>
-      <h2>Dashboard</h2>
     </div>
   );
 }

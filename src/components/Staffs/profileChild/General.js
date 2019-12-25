@@ -34,7 +34,31 @@ function General() {
           </div>
         </div>
       </div>
-      <div className='staff-information'></div>
+      <div className='staff-information'>
+        <div className='title-staff-information'>Staff information</div>
+        <div className='content-staff-information'>
+          <div className='content-left-staff-information'>
+            <div className='content-left-staff-information-child-left'>
+              <p>Staff ID</p>
+              <p>Position</p>
+            </div>
+            <div className='content-left-staff-information-child-right'>
+              <p>B000001</p>
+              <p>PG</p>
+            </div>
+          </div>
+          <div className='content-right-staff-information'>
+            <div className='content-right-staff-information-child-left'>
+              <p>Contract Type</p>
+              <p>Join Date</p>
+            </div>
+            <div className='content-right-staff-information-child-right'>
+              <p>Parttime</p>
+              <p>01/08/2019</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

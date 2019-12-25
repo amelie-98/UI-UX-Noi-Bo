@@ -1,18 +1,23 @@
 import React from 'react';
 import {
   BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
+  // Switch,
+  // Route,
+  // Link
 } from "react-router-dom";
+import {history} from './helpers/history/history';
 import './App.css';
-import CheckIn from './components/Staffs/CheckIn'
-import Profile from './components/Staffs/Profile'
+import Main from './main';
+// import CheckIn from './components/Staffs/CheckIn'
+// import Profile from './components/Staffs/Profile'\
 
 function App() {
   return (
     <div className="App">
-      <Router>
+      <Router history={history}>
+        <Main/>
+      </Router>
+      {/* <Router>
         <div>
           <ul>
             <li>
@@ -38,17 +43,10 @@ function App() {
             </Route>
           </Switch>
         </div>
-      </Router>
+      </Router> */}
     </div>
   );
 }
 
-function Dashboard() {
-  return (
-    <div>
-      <h2>Dashboard</h2>
-    </div>
-  );
-}
 
 export default App;

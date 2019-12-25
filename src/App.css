@@ -1,7 +1,15 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
-:root{
-  --font-roboto: 'Roboto', sans-serif;
+@import url('https://fonts.googleapis.com/css?family=Roboto|Salsa&display=swap');
+*{
+	margin: 0;
+	padding: 0;
 }
-.App{
-  font-family: var(--font-roboto);
+:root {
+	--font-Roboto: 'Roboto', sans-serif;
+	--font-Salsa: 'Salsa', cursive;
+}
+
+html, body{
+	width: 100%;
+	height: 100vh;
+	box-sizing: border-box;
 }

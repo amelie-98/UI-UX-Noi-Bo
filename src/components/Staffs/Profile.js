@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Profile.css';
 import Avatar from '../../assets/img/AvatarBackground.png'
 import General from './profileChild/General'
+import Connection from './profileChild/Connection'
+import ChangePassWord from './profileChild/ChangePassWord'
 
 function Profile() {
+  const [profile, setProfile] = useState('general');
   return (
     <div className="profile">
       <div className='profile-left'>
@@ -15,13 +18,24 @@ function Profile() {
           </div>
         </div>
         <div className='menu-profile-left'>
-          <div className='menu-profile-left-child'>General</div>
-          <div className='menu-profile-left-child'>Connection</div>
-          <div className='menu-profile-left-child'>Change Password</div>
+          <div className='menu-profile-left-child' onClick={() => setProfile('general')} >General</div>
+          <div className='menu-profile-left-child' onClick={() => setProfile('connection')} >Connection</div>
+          <div className='menu-profile-left-child' onClick={() => setProfile('changePassWord')} >Change Password</div>
         </div>
       </div>
       <div className='profile-right'>
-        <General />
+        {
+          profile === 'general' ?
+            <General />
+            :
+            profile === 'connection' ?
+              <Connection />
+              :
+              profile === 'changePassWord' ?
+                <ChangePassWord />
+                :
+                null
+        }
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import './App.css';
 import CheckIn from './components/Staffs/CheckIn'
+import Profile from './components/Staffs/Profile'
 
 function App() {
   return (
@@ -18,7 +19,7 @@ function App() {
               <Link to="/">CheckIn</Link>
             </li>
             <li>
-              <Link to="/about">About</Link>
+              <Link to="/profile">Profile</Link>
             </li>
             <li>
               <Link to="/dashboard">Dashboard</Link>
@@ -29,8 +30,8 @@ function App() {
             <Route exact path="/">
               <CheckIn />
             </Route>
-            <Route path="/about">
-              <About />
+            <Route path="/profile">
+              <Profile />
             </Route>
             <Route path="/dashboard">
               <Dashboard />
@@ -38,14 +39,6 @@ function App() {
           </Switch>
         </div>
       </Router>
-    </div>
-  );
-}
-
-function About() {
-  return (
-    <div>
-      <h2>About</h2>
     </div>
   );
 }

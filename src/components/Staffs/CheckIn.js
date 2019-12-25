@@ -12,7 +12,7 @@ function CheckIn() {
           <p> Cười tươi một cái lĩnh tình ăn chơi</p>
         </div>
         <div className='div-btn-check-in'>
-          <button className='btn-check-in'></button>
+          <button className='btn-check-in'>Start</button>
         </div>
       </div>
     </div>

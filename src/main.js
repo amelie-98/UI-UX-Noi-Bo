@@ -6,15 +6,15 @@ import {
 import MainAdmin from './components/Admin/main';
 
 function Main(props) {
-	return (
-		<div>
-			<Switch>
-				<Route path="/Admin">
-					<MainAdmin/>
-				</Route>
-			</Switch>
-		</div>
-	)
+  return (
+    <div>
+      <Switch>
+        <Route path="/Admin">
+          <MainAdmin/>
+        </Route>
+      </Switch>
+    </div>
+  )
 }
 
 export default Main;

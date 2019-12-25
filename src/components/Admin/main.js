@@ -8,19 +8,19 @@ import Accounts from './accounts';
 import Timesheets from './timesheets';
 
 function MainAdmin(props) {
-	return (
-		<div>
-			<Header/>
-			<Switch>
-				<Route exact path="/Admin">
-					<Accounts/>
-				</Route>
-				<Route path="/Admin/Timesheets">
-					<Timesheets/>
-				</Route>
-			</Switch>
-		</div>
-	)
+  return (
+    <div>
+      <Header/>
+      <Switch>
+        <Route exact path="/Admin">
+          <Accounts/>
+        </Route>
+        <Route path="/Admin/Timesheets">
+          <Timesheets/>
+        </Route>
+      </Switch>
+    </div>
+  )
 }
 
 export default MainAdmin;

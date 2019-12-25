@@ -1,6 +1,5 @@
 import React from 'react';
 import './ChangePassWord.css';
-import { Input } from 'reactstrap';
 
 function ChangePassWord() {
   return (
@@ -13,9 +12,9 @@ function ChangePassWord() {
           <div className='label-password'>Password Confirmation(*)</div>
         </div>
         <div className='content-change-pass-word-right'>
-          <input className='current-password' placeholder='Current Password'/>
-          <input className='new-password' placeholder='New Password'/>
-          <input className='password-confirmation' placeholder='New Password Confirmation'/>
+          <input className='current-password' placeholder='Current Password' />
+          <input className='new-password' placeholder='New Password' />
+          <input className='password-confirmation' placeholder='New Password Confirmation' />
         </div>
       </div>
       <button className='btn-change-pass-word'>Save</button>

@@ -8,6 +8,7 @@ import {
 import './App.css';
 import CheckIn from './components/Staffs/CheckIn'
 import Profile from './components/Staffs/Profile'
+import CheckOut from './components/Staffs/CheckOut'
 
 function App() {
   return (
@@ -21,6 +22,9 @@ function App() {
             <li>
               <Link to="/profile">Profile</Link>
             </li>
+            <li>
+              <Link to="/checkout">CheckOut</Link>
+            </li>
           </ul>
           <hr />
           <Switch>
@@ -29,6 +33,9 @@ function App() {
             </Route>
             <Route path="/profile">
               <Profile />
+            </Route>
+            <Route path="/checkout">
+              <CheckOut />
             </Route>
           </Switch>
         </div>

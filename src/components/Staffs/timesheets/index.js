@@ -1,8 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-import './styles.css';
 
-function Timesheets(props) {
+function Timesheets(params) {
   return (
     <main>
       {/* breadcrumb */}
@@ -24,16 +23,10 @@ function Timesheets(props) {
             <div className="saffs-search">
               <div className="times-select">
                 <select className="custom-select mr-sm-2" id="inputDate">
-                  <option >09-2019</option>
+                  <option>09-2019</option>
                   <option value={1}>08-2019</option>
                   <option value={2}>07-2019</option>
                 </select>
-              </div>
-              <div className="saffs-search-content">
-                <form className="form-inline">
-                  <input className="form-control mr-sm-2" type="search" placeholder="Enter name" aria-label="Search" />
-                  <button className="btn btn-search my-2 my-sm-0" type="submit"><i className="fas fa-search" /></button>
-                </form>
               </div>
             </div>
             <div className="tables-title">
@@ -108,7 +101,7 @@ function Timesheets(props) {
       </div>
       {/*tables-saffs end */}
     </main>
-  )
+  )	
 }
 
 export default Timesheets;

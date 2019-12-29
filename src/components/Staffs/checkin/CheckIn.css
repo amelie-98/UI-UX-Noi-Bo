@@ -1,14 +1,24 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto|Salsa&display=swap');
+*{
+  margin: 0;
+  padding: 0;
+}
+:root {
+  --font-Roboto: 'Roboto', sans-serif;
+  --font-Salsa: 'Salsa', cursive;
+}
 .check-in{
   display: flex;
   justify-content: center;
-  margin-top: 140px;
+  margin-top: 80px;
 }
 .total-content-check-in{
   display: flex;
   flex-direction: column;
-  width: 434px;
+  width: 400px;
   height: 264px;
   background: #FFFFFF;
+  font-family: var(--font-Roboto);
 }
 .title-check-in{
   display: flex;
@@ -39,14 +49,13 @@
   justify-content: center;
   align-items: center;
   height: 55px;
+  font-family: var(--font-Roboto);
 }
-.text-check-in > p{
+.text-check-in p{
   display: flex;
   justify-content: center;
   margin: 0px;
   font-size: 16px;
-  font-style: normal;
-  font-weight: normal;
 }
 .div-btn-check-in{
   display: flex;
@@ -54,13 +63,22 @@
   align-items: flex-end;
   flex: 1;
 }
-.btn-check-in{
-  width: 300px;
+.btn-checkin{
+  display: flex !important;
+  width: 70%;
   height: 50px;
-  background: #219653;
-  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
-  font-style: normal;
-  font-weight: normal;
-  font-size: 16px;
-  color: #FFFFFF;
+  margin: 10px auto !important;
+  justify-content: center;
+  border-radius: 0 !important;
+  font-size: 18px !important;
+  background-color:  #219653 !important;
+  color: #fff !important;
+  font-family: var(--font-Roboto);
+}
+
+.btn-checkin:hover{
+  background-color: #11d463 !important;
+}
+.link-btn:hover{
+  text-decoration: none !important;
 }

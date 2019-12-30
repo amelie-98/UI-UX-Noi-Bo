@@ -7,5 +7,6 @@ export default {
   setAllDateStaff: 'SET_ALL_DATE_STAFF',
   setStaffTimeSheet: 'SET_STAFF_TIME_SHEET',
   setStaffList: "SET_STAFF_LIST",
-  setErrorCode:"SET_ERROR_CODE"
+  setErrorCode: "SET_ERROR_CODE",
+  setAllUser: "SET_ALL_USER"
 };

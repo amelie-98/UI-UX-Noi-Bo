@@ -119,11 +119,11 @@ export const getStaffTimeSheet = (data) => {
 }
 //action call Api for only Admin
 //action get All USer
-export const getAllUSer = () => {
+export const getAllUser = () => {
   return (dispatch) => {
     axios.get(`${base_link}users`)
       .then(function (res) {
-        console.log(res.data)
+        dispatch(setAllUser(res.data))
       })
       .catch(function (error) {
         console.log(error);
@@ -187,3 +187,5 @@ export const setStaffTimeSheet = (data) => { return { type: actionTypes.setStaff
 export const setStaffList = (data) => { return { type: actionTypes.setStaffList, data: data } }
 //save error Code
 export const setErrorCode = (data) => { return { type: actionTypes.setErrorCode, data: data } }
+//save All User
+export const setAllUser = (data) => { return { type: actionTypes.setAllUser, data: data } }

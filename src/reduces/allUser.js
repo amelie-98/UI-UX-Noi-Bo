@@ -4,7 +4,7 @@ var initialState = [];
 var myReducer = (state = initialState, action) => {
   switch (action.type) {
 
-    case actionTypes.getAllUser:
+    case actionTypes.setAllUser:
       return action.data;
 
     default:

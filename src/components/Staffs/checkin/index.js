@@ -1,21 +1,67 @@
-import React from 'react';
-import {Link} from 'react-router-dom';
+import React, { useEffect } from 'react';
 import './CheckIn.css';
+import { connect } from 'react-redux';
+import * as actions from '../../../actions/index';
+import moment from 'moment'
+import { history } from '../../../helpers/history/history';
+import NoCurrentUser from '../../Error/NoCurrentUser'
+import NotHaveAuthority from '../../Error/NotHaveAuthority'
 
-function CheckIn() {
+function CheckIn(props) {
+  useEffect(() => {
+    props.getInfoCurrentUser();
+    // eslint-disable-next-line
+  }, []);
+  const { statusCheckIn, errorCode } = props
+  useEffect(() => {
+    if (statusCheckIn === 200) {
+      console.log('check in thành công thì tiến hành đẩy vào trang check out')
+      history.push('/Checkout')
+      props.setStatusCheckIn(0)
+    }
+    // eslint-disable-next-line
+  }, [statusCheckIn]);
+  const letCheckIn = () => {
+    props.checkIn();
+  }
+  console.log(statusCheckIn)
   return (
-    <div className="check-in">
-      <div className="total-content-check-in">
-        <div className="title-check-in">Checkin</div>
-        <div className="date-check-in">10-10-2019</div>
-        <div className="text-check-in">
-          <p>Sáng ra nhìn thấy bạn hiền</p>
-          <p> Cười tươi một cái lĩnh tình ăn chơi</p>
-        </div>
-        <Link to="/Checkout" className="link-btn"><button className="btn btn-checkin">Start</button></Link>
-      </div>
+    <div>
+      {
+        errorCode === 401 ?
+          <NoCurrentUser />
+          :
+          errorCode === 403 ?
+            <NotHaveAuthority />
+            :
+            <div className="check-in">
+              <div className='total-content-check-in'>
+                <div className='title-check-in'>Check In</div>
+                <div className='date-check-in'>{moment().format('L')}</div>
+                <div className='text-check-in'>
+                  <p>Sáng ra nhìn thấy bạn hiền</p>
+                  <p> Cười tươi một cái lĩnh tình ăn chơi</p>
+                </div>
+                <button className="btn btn-checkin" onClick={letCheckIn}>Start</button>
+              </div>
+            </div>
+      }
     </div>
   );
 }
 
-export default CheckIn;
+const mapStatetoProps = (state) => {
+  return {
+    currentUser: state.currentUser,
+    statusCheckIn: state.statusCheckIn,
+    errorCode: state.errorCode
+  }
+}
+const mapDispatchToProps = (dispatch) => {
+  return {
+    checkIn: () => { dispatch(actions.checkIn()) },
+    setStatusCheckIn: (data) => { dispatch(actions.setStatusCheckIn(data)) },
+    getInfoCurrentUser: () => { dispatch(actions.getInfoCurrentUser()) }
+  }
+}
+export default connect(mapStatetoProps, mapDispatchToProps)(CheckIn);

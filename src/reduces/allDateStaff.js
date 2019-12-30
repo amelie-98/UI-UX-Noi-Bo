@@ -4,8 +4,8 @@ var initialState = [];
 var myReducer = (state = initialState, action) => {
   switch (action.type) {
 
-    case actionTypes.saveTimeSheetStaff:
-      return action.payload;
+    case actionTypes.setAllDateStaff:
+      return action.data;
 
     default:
       return state;

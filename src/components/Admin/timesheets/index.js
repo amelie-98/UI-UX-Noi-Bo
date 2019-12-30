@@ -1,8 +1,9 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './styles.css';
 
 function Timesheets(props) {
+
   return (
     <main>
       {/* breadcrumb */}
@@ -31,7 +32,17 @@ function Timesheets(props) {
               </div>
               <div className="saffs-search-content">
                 <form className="form-inline">
-                  <input className="form-control mr-sm-2" type="search" placeholder="Enter name" aria-label="Search" />
+                  <div>
+                    <input className="form-control mr-sm-2" type="search" list="browsers" />
+                    <datalist id="browsers">
+                      <option value="Chrome" />
+                      <option value="Firefox" />
+                      <option value="Internet Explorer" />
+                      <option value="Opera" />
+                      <option value="Safari" />
+                      <option value="Microsoft Edge" />
+                    </datalist>
+                  </div>
                   <button className="btn btn-search my-2 my-sm-0" type="submit"><i className="fas fa-search" /></button>
                 </form>
               </div>
@@ -86,23 +97,6 @@ function Timesheets(props) {
                 </thead>
               </table>
             </div>
-          </div>
-          <div className="pagination-wraper">
-            <nav aria-label="...">
-              <ul className="pagination">
-                <li className="page-item disabled">
-                  <Link className="page-link" to="/" tabIndex={-1}><i className="fas fa-angle-left" /></Link>
-                </li>
-                <li className="page-item active"><Link className="page-link" to="/">1</Link></li>
-                <li className="page-item ">
-                  <Link className="page-link" to="/">2 <span className="sr-only">(current)</span></Link>
-                </li>
-                <li className="page-item"><Link className="page-link" to="/">3</Link></li>
-                <li className="page-item">
-                  <Link className="page-link" to="/"><i className="fas fa-angle-right" /></Link>
-                </li>
-              </ul>
-            </nav>
           </div>
         </div>
       </div>

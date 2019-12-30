@@ -1,107 +1,143 @@
-import React from 'react';
-import {Link} from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import * as actions from '../../../actions/index';
+import moment from 'moment'
+import classNames from 'classnames'
+import _ from 'lodash'
+import NoCurrentUser from '../../Error/NoCurrentUser'
+import NotHaveAuthority from '../../Error/NotHaveAuthority'
 
-function Timesheets(params) {
+function Timesheets(props) {
+  const [date, setDate] = useState(moment().format('MM-YYYY'));
+  useEffect(() => {
+    props.getInfoCurrentUser();
+    props.getAllDateStaff();
+    // eslint-disable-next-line
+  }, []);
+  useEffect(() => {
+    props.getStaffTimeSheet(date);
+    // eslint-disable-next-line
+  }, [date]);
+  const { staffTimeSheet, allDateStaff, errorCode } = props;
+  const letGetTimeSheet = (e) => {
+    setDate(e.target.value)
+  }
   return (
-    <main>
-      {/* breadcrumb */}
-      <div className="breadcrumb-wrapper">
-        <div className="container-fluid">
-          <nav id="breadcrumb-body" aria-label="breadcrumb">
-            <ol className="breadcrumb">
-              <li className="breadcrumb-item"><Link to="/">Dashboard</Link></li>
-              <li className="breadcrumb-item active" aria-current="page">Timeshesst</li>
-            </ol>
-          </nav>
-        </div>
-      </div>
-      {/* breadcrumb end */}
-      {/*tables-saffs  */}
-      <div className="tables-saffs-wrapper">
-        <div className="container-fluid">
-          <div className="saffs-body">
-            <div className="saffs-search">
-              <div className="times-select">
-                <select className="custom-select mr-sm-2" id="inputDate">
-                  <option>09-2019</option>
-                  <option value={1}>08-2019</option>
-                  <option value={2}>07-2019</option>
-                </select>
+    <div>
+      {
+        errorCode === 401 ?
+          <NoCurrentUser />
+          :
+          errorCode === 403 ?
+            <NotHaveAuthority />
+            :
+            <main>
+              {/* breadcrumb */}
+              <div className="breadcrumb-wrapper">
+                <div className="container-fluid">
+                  <nav id="breadcrumb-body" aria-label="breadcrumb">
+                    <ol className="breadcrumb">
+                      <li className="breadcrumb-item"><Link to="/">Dashboard</Link></li>
+                      <li className="breadcrumb-item active" aria-current="page">Timeshesst</li>
+                    </ol>
+                  </nav>
+                </div>
               </div>
-            </div>
-            <div className="tables-title">
-              <div className="tables-title-item">Inlate: 1</div>
-              <div className="tables-title-item">Leave early: 1</div>
-              <div className="tables-title-item">Nghỉ: 1</div>
-            </div>
-            <div className="saffs-table-content">
-              <table className="table table-hover">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>CheckIn</th>
-                    <th>Checkout</th>
-                    <th>Report</th>
-                    <th />
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>30/09/2019</td>
-                    <td>08:10</td>
-                    <td>17:00</td>
-                    <td>Yes</td>
-                    <td className="setting-button"><button type="button" className="btn btn-success">Report</button></td>
-                  </tr>
-                  <tr>
-                    <td>39/09/2019</td>
-                    <td>08:10</td>
-                    <td>17:15</td>
-                    <td className="times-dis">No</td>
-                    <td className="setting-button"><button type="button" className="btn btn-success">Report</button></td>
-                  </tr>
-                  <tr>
-                    <td>28/09/2019</td>
-                    <td>08:10</td>
-                    <td className="times-dis">16:10</td>
-                    <td>Yes</td>
-                    <td className="setting-button"><button type="button" className="btn btn-success">Report</button></td>
-                  </tr>
-                </tbody>
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>CheckIn</th>
-                    <th>Checkout</th>
-                    <th>Report</th>
-                    <th />
-                  </tr>
-                </thead>
-              </table>
-            </div>
-          </div>
-          <div className="pagination-wraper">
-            <nav aria-label="...">
-              <ul className="pagination">
-                <li className="page-item disabled">
-                  <Link className="page-link" to="/" tabIndex={-1}><i className="fas fa-angle-left" /></Link>
-                </li>
-                <li className="page-item active"><Link className="page-link" to="/">1</Link></li>
-                <li className="page-item ">
-                  <Link className="page-link" to="/">2 <span className="sr-only">(current)</span></Link>
-                </li>
-                <li className="page-item"><Link className="page-link" to="/">3</Link></li>
-                <li className="page-item">
-                  <Link className="page-link" to="/"><i className="fas fa-angle-right" /></Link>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
-      </div>
-      {/*tables-saffs end */}
-    </main>
-  )	
+              {/* breadcrumb end */}
+              {/*tables-saffs  */}
+              <div className="tables-saffs-wrapper">
+                <div className="container-fluid">
+                  <div className="saffs-body">
+                    <div className="saffs-search">
+                      <div className="times-select">
+                        <select className="custom-select mr-sm-2" id="inputDate"
+                          onChange={letGetTimeSheet}>
+                          <option >{date}</option>
+                          {_.map(allDateStaff, (item, index) => (
+                            <option key={index}>{item.date}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                    <div className="tables-title">
+                      <div className="tables-title-item">{`Inlate: ${_.filter(staffTimeSheet, n => moment(n.checkIn, "hh:mm").isAfter(moment('08:00', "HH:mm"))).length}`}</div>
+                      <div className="tables-title-item">{`Leave early: ${_.filter(staffTimeSheet, n => moment(n.checkOut, "hh:mm").isBefore(moment('17:00', "HH:mm"))).length}`}</div>
+                      <div className="tables-title-item">{`Nghỉ: ${_.filter(staffTimeSheet, n => n.report === 'No').length}`}</div>
+                    </div>
+                    <div className="saffs-table-content">
+                      <table className="table table-hover">
+                        <thead>
+                          <tr>
+                            <th>Date</th>
+                            <th>CheckIn</th>
+                            <th>Checkout</th>
+                            <th>Report</th>
+                            <th />
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {_.map(staffTimeSheet, (item, index) => (
+                            <tr key={index}>
+                              <td>{item.date}</td>
+                              <td
+                                className={classNames('', {
+                                  red_text: moment(item.checkIn, "hh:mm").isAfter(moment('8:00', "HH:mm")) === true
+                                })}
+                              >
+                                {item.checkIn}
+                              </td>
+                              <td
+                                className={classNames('', {
+                                  red_text: moment(item.checkOut, "hh:mm").isBefore(moment('17:00', "HH:mm")) === true
+                                })}
+                              >
+                                {item.checkOut}
+                              </td>
+                              <td
+                                className={classNames('', {
+                                  red_text: item.report === 'No'
+                                })}
+                              >
+                                {item.report}
+                              </td>
+                              <td className="setting-button"><button type="button" className="btn btn-success">Report</button></td>
+                            </tr>
+                          ))}
+                        </tbody>
+                        <thead>
+                          <tr>
+                            <th>Date</th>
+                            <th>CheckIn</th>
+                            <th>Checkout</th>
+                            <th>Report</th>
+                            <th />
+                          </tr>
+                        </thead>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/*tables-staffs end */}
+            </main>
+      }
+    </div>
+  )
 }
 
-export default Timesheets;
+const mapStatetoProps = (state) => {
+  return {
+    staffTimeSheet: state.staffTimeSheet,
+    allDateStaff: state.allDateStaff,
+    errorCode: state.errorCode
+  }
+}
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getStaffTimeSheet: (data) => { dispatch(actions.getStaffTimeSheet(data)) },
+    getAllDateStaff: () => { dispatch(actions.getAllDateStaff()) },
+    getInfoCurrentUser: () => { dispatch(actions.getInfoCurrentUser()) }
+  }
+}
+export default connect(mapStatetoProps, mapDispatchToProps)(Timesheets);

@@ -1,11 +1,11 @@
 import actionTypes from '../const/actionTypes';
 
-var initialState = {}
+var initialState = 0;
 var myReducer = (state = initialState, action) => {
   switch (action.type) {
 
-    case actionTypes.setCurrentUser:
-      return action.data
+    case actionTypes.setErrorCode:
+      return action.data;
 
     default:
       return state;

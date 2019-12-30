@@ -23,7 +23,7 @@ function Timesheets(props) {
           <div className="saffs-body">
             <div className="saffs-search">
               <div className="times-select">
-                <select className="custom-select mr-sm-2" id="inputDate">
+                <select className="custom-select mr-sm-2" id="inputDate" >
                   <option >09-2019</option>
                   <option value={1}>08-2019</option>
                   <option value={2}>07-2019</option>

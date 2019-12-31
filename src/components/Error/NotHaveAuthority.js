@@ -1,9 +1,11 @@
 import React from 'react';
 import './NotHaveAuthority.css';
+import { history } from '../../helpers/history/history'
 
 function NotHaveAuthority() {
   const getBackLogin = () => {
     console.log('get Back Login')
+    history.push("/Login")
   }
   return (
     <div className='not-have-authority'>

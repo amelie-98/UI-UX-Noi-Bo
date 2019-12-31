@@ -1,9 +1,11 @@
 import React from 'react';
 import './NoCurrentUser.css';
+import { history } from '../../helpers/history/history'
 
 function NoCurrentUser() {
   const getBackLogin = () => {
     console.log('get Back Login')
+    history.push("/Login")
   }
   return (
     <div className='no-current-user'>

@@ -91,9 +91,15 @@ export const changePassWord = (data) => {
   }
 }
 //action getAllDateStaff (lấy ra thời gian Staff làm ở Cty)
-export const getAllDateStaff = () => {
+export const getAllDateStaff = (id) => {
+  let params;
+  if (id !== undefined) {
+    params = {
+      id: id
+    }
+  }
   return (dispatch) => {
-    axios.get(`${base_link}allDateStaff`)
+    axios.get(`${base_link}allDateStaff`, params)
       .then(function (res) {
         dispatch(setAllDateStaff(res.data))
       })
@@ -104,8 +110,12 @@ export const getAllDateStaff = () => {
 }
 //action getStaffTimeSheet(gửi kèm date) (for only Staff)
 export const getStaffTimeSheet = (data) => {
-  const params = {
-    date: data
+  let params;
+  if (data.id !== undefined) {
+    params = {
+      date: data.date,
+      id: data.id
+    }
   }
   return (dispatch) => {
     axios.get(`${base_link}staffTimeSheet`, params)

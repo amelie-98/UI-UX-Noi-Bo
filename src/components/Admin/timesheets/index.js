@@ -7,15 +7,31 @@ import NoCurrentUser from '../../Error/NoCurrentUser'
 import NotHaveAuthority from '../../Error/NotHaveAuthority'
 import _ from 'lodash'
 import $ from 'jquery'
+import moment from 'moment'
+import classNames from 'classnames'
 
 function Timesheets(props) {
-  const [id, setID] = useState(0);
+  const [id, setID] = useState(null);
+  const [date, setDate] = useState(moment().format('MM-YYYY'));
   useEffect(() => {
     props.getInfoCurrentUser();
     props.getAllUser();
     // eslint-disable-next-line
   }, []);
-  const { allUser, errorCode } = props
+  useEffect(() => {
+    if (id !== null) {
+      props.getAllDateStaff(id)
+      props.getStaffTimeSheet(date, id)
+    }
+    // eslint-disable-next-line
+  }, [id]);
+  useEffect(() => {
+    if (id !== null) {
+      props.getStaffTimeSheet(date, id);
+    }
+    // eslint-disable-next-line
+  }, [date]);
+  const { allUser, errorCode, allDateStaff, staffTimeSheet } = props
   //start code datalist
   //sự kiện change của input khi bấm vào data lists
   $(document).on('change', 'input', function () {
@@ -29,7 +45,9 @@ function Timesheets(props) {
     }
   });
   //end code datalist
-  console.log(id)
+  const letGetTimeSheet = (e) => {
+    setDate(e.target.value)
+  }
   return (
     <div>
       {
@@ -58,10 +76,11 @@ function Timesheets(props) {
                   <div className="saffs-body">
                     <div className="saffs-search">
                       <div className="times-select">
-                        <select className="custom-select mr-sm-2" id="inputDate" >
-                          <option >09-2019</option>
-                          <option value={1}>08-2019</option>
-                          <option value={2}>07-2019</option>
+                        <select className="custom-select mr-sm-2" id="inputDate"
+                          onChange={letGetTimeSheet}>
+                          {_.map(allDateStaff, (item, index) => (
+                            <option key={index}>{item.date}</option>
+                          ))}
                         </select>
                       </div>
                       <div className="saffs-search-content">
@@ -70,7 +89,7 @@ function Timesheets(props) {
                             <input className="form-control mr-sm-2" type="search" list="users" id="someid" />
                             <datalist id="users" >
                               {_.map(allUser, (item, index) => (
-                                <option data-id={index} value={item.name} key={index} />
+                                <option data-id={item.id} value={item.name} key={index} />
                               ))}
                             </datalist>
                           </div>
@@ -79,9 +98,9 @@ function Timesheets(props) {
                       </div>
                     </div>
                     <div className="tables-title">
-                      <div className="tables-title-item">Inlate: 1</div>
-                      <div className="tables-title-item">Leave early: 1</div>
-                      <div className="tables-title-item">Nghỉ: 1</div>
+                      <div className="tables-title-item">{`Inlate: ${_.filter(staffTimeSheet, n => moment(n.checkIn, "hh:mm").isAfter(moment('08:00', "HH:mm"))).length}`}</div>
+                      <div className="tables-title-item">{`Leave early: ${_.filter(staffTimeSheet, n => moment(n.checkOut, "hh:mm").isBefore(moment('17:00', "HH:mm"))).length}`}</div>
+                      <div className="tables-title-item">{`Nghỉ: ${_.filter(staffTimeSheet, n => n.report === 'No').length}`}</div>
                     </div>
                     <div className="saffs-table-content">
                       <table className="table table-hover">
@@ -95,27 +114,33 @@ function Timesheets(props) {
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            <td>30/09/2019</td>
-                            <td>08:10</td>
-                            <td>17:00</td>
-                            <td>Yes</td>
-                            <td className="setting-button"><button type="button" className="btn btn-success">Report</button></td>
-                          </tr>
-                          <tr>
-                            <td>39/09/2019</td>
-                            <td>08:10</td>
-                            <td>17:15</td>
-                            <td className="times-dis">No</td>
-                            <td className="setting-button"><button type="button" className="btn btn-success">Report</button></td>
-                          </tr>
-                          <tr>
-                            <td>28/09/2019</td>
-                            <td>08:10</td>
-                            <td className="times-dis">16:10</td>
-                            <td>Yes</td>
-                            <td className="setting-button"><button type="button" className="btn btn-success">Report</button></td>
-                          </tr>
+                          {_.map(staffTimeSheet, (item, index) => (
+                            <tr key={index}>
+                              <td>{item.date}</td>
+                              <td
+                                className={classNames('', {
+                                  red_text: moment(item.checkIn, "hh:mm").isAfter(moment('8:00', "HH:mm")) === true
+                                })}
+                              >
+                                {item.checkIn}
+                              </td>
+                              <td
+                                className={classNames('', {
+                                  red_text: moment(item.checkOut, "hh:mm").isBefore(moment('17:00', "HH:mm")) === true
+                                })}
+                              >
+                                {item.checkOut}
+                              </td>
+                              <td
+                                className={classNames('', {
+                                  red_text: item.report === 'No'
+                                })}
+                              >
+                                {item.report}
+                              </td>
+                              <td className="setting-button"><button type="button" className="btn btn-success">Report</button></td>
+                            </tr>
+                          ))}
                         </tbody>
                         <thead>
                           <tr>
@@ -142,15 +167,17 @@ const mapStatetoProps = (state) => {
   return {
     currentUser: state.currentUser,
     errorCode: state.errorCode,
-    allUser: state.allUser
+    allUser: state.allUser,
+    allDateStaff: state.allDateStaff,
+    staffTimeSheet: state.staffTimeSheet
   }
 }
 const mapDispatchToProps = (dispatch) => {
   return {
     getInfoCurrentUser: () => { dispatch(actions.getInfoCurrentUser()) },
     getAllUser: () => { dispatch(actions.getAllUser()) },
-    getAllDateStaff: (name) => { dispatch(actions.getAllDateStaff(name)) },
-    getStaffTimeSheet: (date, name) => { dispatch(actions.getStaffTimeSheet({ date: date, name: name })) },
+    getAllDateStaff: (id) => { dispatch(actions.getAllDateStaff(id)) },
+    getStaffTimeSheet: (date, id) => { dispatch(actions.getStaffTimeSheet({ date: date, id: id })) },
   }
 }
 export default connect(mapStatetoProps, mapDispatchToProps)(Timesheets);

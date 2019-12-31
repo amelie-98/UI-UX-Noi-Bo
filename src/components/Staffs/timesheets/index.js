@@ -53,7 +53,6 @@ function Timesheets(props) {
                       <div className="times-select">
                         <select className="custom-select mr-sm-2" id="inputDate"
                           onChange={letGetTimeSheet}>
-                          <option >{date}</option>
                           {_.map(allDateStaff, (item, index) => (
                             <option key={index}>{item.date}</option>
                           ))}
@@ -135,7 +134,7 @@ const mapStatetoProps = (state) => {
 }
 const mapDispatchToProps = (dispatch) => {
   return {
-    getStaffTimeSheet: (data) => { dispatch(actions.getStaffTimeSheet(data)) },
+    getStaffTimeSheet: (date) => { dispatch(actions.getStaffTimeSheet(date)) },
     getAllDateStaff: () => { dispatch(actions.getAllDateStaff()) },
     getInfoCurrentUser: () => { dispatch(actions.getInfoCurrentUser()) }
   }

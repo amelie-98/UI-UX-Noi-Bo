@@ -9,10 +9,11 @@ import _ from 'lodash'
 import $ from 'jquery'
 import moment from 'moment'
 import classNames from 'classnames'
+import DateRangePicker from '../../DateRangePicker'
 
 function Timesheets(props) {
   const [id, setID] = useState(null);
-  const [date, setDate] = useState(moment().format('MM-YYYY'));
+  const { allUser, errorCode, staffTimeSheet, dateRangePicker } = props
   useEffect(() => {
     props.getInfoCurrentUser();
     props.getAllUser();
@@ -20,18 +21,16 @@ function Timesheets(props) {
   }, []);
   useEffect(() => {
     if (id !== null) {
-      props.getAllDateStaff(id)
-      props.getStaffTimeSheet(date, id)
+      props.getStaffTimeSheetByAdmin(dateRangePicker, id)
     }
     // eslint-disable-next-line
   }, [id]);
   useEffect(() => {
     if (id !== null) {
-      props.getStaffTimeSheet(date, id);
+      props.getStaffTimeSheetByAdmin(dateRangePicker, id);
     }
     // eslint-disable-next-line
-  }, [date]);
-  const { allUser, errorCode, allDateStaff, staffTimeSheet } = props
+  }, [dateRangePicker]);
   //start code datalist
   //sự kiện change của input khi bấm vào data lists
   $(document).on('change', 'input', function () {
@@ -45,9 +44,6 @@ function Timesheets(props) {
     }
   });
   //end code datalist
-  const letGetTimeSheet = (e) => {
-    setDate(e.target.value)
-  }
   return (
     <div>
       {
@@ -76,12 +72,7 @@ function Timesheets(props) {
                   <div className="saffs-body">
                     <div className="saffs-search">
                       <div className="times-select">
-                        <select className="custom-select mr-sm-2" id="inputDate"
-                          onChange={letGetTimeSheet}>
-                          {_.map(allDateStaff, (item, index) => (
-                            <option key={index}>{item.date}</option>
-                          ))}
-                        </select>
+                        <DateRangePicker />
                       </div>
                       <div className="saffs-search-content">
                         <form className="form-inline">
@@ -168,16 +159,15 @@ const mapStatetoProps = (state) => {
     currentUser: state.currentUser,
     errorCode: state.errorCode,
     allUser: state.allUser,
-    allDateStaff: state.allDateStaff,
-    staffTimeSheet: state.staffTimeSheet
+    staffTimeSheet: state.staffTimeSheet,
+    dateRangePicker: state.dateRangePicker
   }
 }
 const mapDispatchToProps = (dispatch) => {
   return {
     getInfoCurrentUser: () => { dispatch(actions.getInfoCurrentUser()) },
     getAllUser: () => { dispatch(actions.getAllUser()) },
-    getAllDateStaff: (id) => { dispatch(actions.getAllDateStaff(id)) },
-    getStaffTimeSheet: (date, id) => { dispatch(actions.getStaffTimeSheet({ date: date, id: id })) },
+    getStaffTimeSheetByAdmin: (date, id) => { dispatch(actions.getStaffTimeSheetByAdmin({ date: date, id: id })) },
   }
 }
 export default connect(mapStatetoProps, mapDispatchToProps)(Timesheets);

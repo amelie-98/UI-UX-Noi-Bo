@@ -10,8 +10,10 @@ const base_link = 'http://localhost:3000/'
 //action login
 export const logIn = () => {
   const body = {
-    email: 'test1@gmail.com',
-    password: '1234561'
+    user: {
+      email: 'test1@gmail.com',
+      password: '1234561'
+    }
   }
   return (dispatch) => {
     axios.post(`${base_link}session`, body)
@@ -54,7 +56,7 @@ export const checkIn = () => {
     timeCheckIn: moment().format('HH:mm:ss')
   }
   return (dispatch) => {
-    axios.put(`${base_link}checkIn`, body)
+    axios.post(`${base_link}checkIn`, body)
       .then(function (res) {
         dispatch(setStatusCheckIn(res.status))
       })
@@ -69,7 +71,7 @@ export const checkOut = () => {
     timeCheckOut: moment().format('HH:mm:ss')
   }
   return (dispatch) => {
-    axios.put(`${base_link}checkOut`, body)
+    axios.post(`${base_link}checkOut`, body)
       .then(function (res) {
         dispatch(setStatusCheckOut(res.status))
       })
@@ -81,42 +83,25 @@ export const checkOut = () => {
 //action change password
 export const changePassWord = (data) => {
   const body = {
-    currentPassword: data.currentPassword,
-    newPassword: data.newPassword,
-    passwordConfirmation: data.passwordConfirmation
+    password:
+    {
+      currentPassword: data.currentPassword,
+      newPassword: data.newPassword,
+      passwordConfirmation: data.passwordConfirmation
+    }
   }
   console.log(body)
   return (dispatch) => {
-    // axios change password
-  }
-}
-//action getAllDateStaff (lấy ra thời gian Staff làm ở Cty)
-export const getAllDateStaff = (id) => {
-  let params;
-  if (id !== undefined) {
-    params = {
-      id: id
-    }
-  }
-  return (dispatch) => {
-    axios.get(`${base_link}allDateStaff`, params)
-      .then(function (res) {
-        dispatch(setAllDateStaff(res.data))
-      })
-      .catch(function (error) {
-        console.log(error);
-      })
+    // axios change password   put
   }
 }
 //action getStaffTimeSheet(gửi kèm date) (for only Staff)
 export const getStaffTimeSheet = (data) => {
-  let params;
-  if (data.id !== undefined) {
-    params = {
-      date: data.date,
-      id: data.id
-    }
+  const params = {
+    from_date: data.startTime,
+    to_date: data.endTime
   }
+  console.log(data)
   return (dispatch) => {
     axios.get(`${base_link}staffTimeSheet`, params)
       .then(function (res) {
@@ -158,15 +143,21 @@ export const changeStatusStaff = () => {
     // axios change Status Staff
   }
 }
-//action getStaffList
-export const getStaffList = () => {
+//action get Staff Time sheet by Admin 
+export const getStaffTimeSheetByAdmin = (data) => {
+  const params = {
+    from_date: data.date.startTime,
+    to_date: data.date.endTime,
+    id: data.id
+  }
+  console.log(data)
   return (dispatch) => {
-    axios.get(`${base_link}staffList`)
+    axios.get(`${base_link}staffTimeSheetByAdmin`, params)
       .then(function (res) {
-        dispatch(setStaffList(res.data))
+        dispatch(setStaffTimeSheet(res.data))
       })
       .catch(function (error) {
-        console.log(error)
+        console.log(error);
       })
   }
 }
@@ -189,13 +180,11 @@ export const setStatusCheckOut = (data) => { return { type: actionTypes.setStatu
 export const setStatusLogIn = (data) => { return { type: actionTypes.setStatusLogIn, data: data } }
 //save status Log Out
 export const setStatusLogOut = (data) => { return { type: actionTypes.setStatusLogOut, data: data } }
-//save current User All Date Staff
-export const setAllDateStaff = (data) => { return { type: actionTypes.setAllDateStaff, data: data } }
 //save current User Time Sheet
 export const setStaffTimeSheet = (data) => { return { type: actionTypes.setStaffTimeSheet, data: data } }
-//save staff List
-export const setStaffList = (data) => { return { type: actionTypes.setStaffList, data: data } }
 //save error Code
 export const setErrorCode = (data) => { return { type: actionTypes.setErrorCode, data: data } }
 //save All User
 export const setAllUser = (data) => { return { type: actionTypes.setAllUser, data: data } }
+//save date Range Picker 
+export const setDateRangePicker = (data) => { return { type: actionTypes.setDateRangePicker, data: data } }

@@ -8,5 +8,6 @@ export default {
   setStaffTimeSheet: 'SET_STAFF_TIME_SHEET',
   setStaffList: "SET_STAFF_LIST",
   setErrorCode: "SET_ERROR_CODE",
-  setAllUser: "SET_ALL_USER"
+  setAllUser: "SET_ALL_USER",
+  setDateRangePicker: "SET_DATE_RANGE_PICKER"
 };

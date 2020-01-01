@@ -7,11 +7,11 @@ import statusCheckIn from './statusCheckIn';
 import statusCheckOut from './statusCheckOut';
 import statusLogIn from './statusLogIn';
 import statusLogOut from './statusLogOut';
-import allDateStaff from './allDateStaff'
 import staffTimeSheet from './staffTimeSheet';
 import staffList from './staffList';
 import allUser from './allUser'
 import errorCode from './errorCode'
+import dateRangePicker from './dateRangePicker'
 
 const myReducer = combineReducers({
   uiReducer: uiReducer,
@@ -22,11 +22,11 @@ const myReducer = combineReducers({
   statusCheckOut: statusCheckOut,
   statusLogIn: statusLogIn,
   statusLogOut: statusLogOut,
-  allDateStaff: allDateStaff,
   staffTimeSheet: staffTimeSheet,
   staffList: staffList,
   allUser: allUser,
-  errorCode: errorCode
+  errorCode: errorCode,
+  dateRangePicker: dateRangePicker
 });
 
 export default myReducer;

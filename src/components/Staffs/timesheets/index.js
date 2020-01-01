@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions/index';
@@ -7,22 +7,18 @@ import classNames from 'classnames'
 import _ from 'lodash'
 import NoCurrentUser from '../../Error/NoCurrentUser'
 import NotHaveAuthority from '../../Error/NotHaveAuthority'
+import DateRangePicker from '../../DateRangePicker'
 
 function Timesheets(props) {
-  const [date, setDate] = useState(moment().format('MM-YYYY'));
+  const { staffTimeSheet, errorCode, dateRangePicker } = props;
   useEffect(() => {
     props.getInfoCurrentUser();
-    props.getAllDateStaff();
     // eslint-disable-next-line
   }, []);
   useEffect(() => {
-    props.getStaffTimeSheet(date);
+    props.getStaffTimeSheet(dateRangePicker);
     // eslint-disable-next-line
-  }, [date]);
-  const { staffTimeSheet, allDateStaff, errorCode } = props;
-  const letGetTimeSheet = (e) => {
-    setDate(e.target.value)
-  }
+  }, [dateRangePicker]);
   return (
     <div>
       {
@@ -51,12 +47,7 @@ function Timesheets(props) {
                   <div className="saffs-body">
                     <div className="saffs-search">
                       <div className="times-select">
-                        <select className="custom-select mr-sm-2" id="inputDate"
-                          onChange={letGetTimeSheet}>
-                          {_.map(allDateStaff, (item, index) => (
-                            <option key={index}>{item.date}</option>
-                          ))}
-                        </select>
+                        <DateRangePicker />
                       </div>
                     </div>
                     <div className="tables-title">
@@ -128,14 +119,13 @@ function Timesheets(props) {
 const mapStatetoProps = (state) => {
   return {
     staffTimeSheet: state.staffTimeSheet,
-    allDateStaff: state.allDateStaff,
-    errorCode: state.errorCode
+    errorCode: state.errorCode,
+    dateRangePicker: state.dateRangePicker
   }
 }
 const mapDispatchToProps = (dispatch) => {
   return {
-    getStaffTimeSheet: (date) => { dispatch(actions.getStaffTimeSheet(date)) },
-    getAllDateStaff: () => { dispatch(actions.getAllDateStaff()) },
+    getStaffTimeSheet: (data) => { dispatch(actions.getStaffTimeSheet(data)) },
     getInfoCurrentUser: () => { dispatch(actions.getInfoCurrentUser()) }
   }
 }

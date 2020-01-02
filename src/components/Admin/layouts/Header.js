@@ -16,20 +16,20 @@ function Header(props) {
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav mr-auto">
               <li className="nav-item active">
-                <Link className="nav-link" to="/Admin">Home <span className="sr-only">(current)</span></Link>
+                <Link className="nav-link" to="/admin">Home <span className="sr-only">(current)</span></Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/Admin">Accounts</Link>
+                <Link className="nav-link" to="/admin">Accounts</Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/Admin/Timesheets">Timesheets</Link>
+                <Link className="nav-link" to="/admin/timesheets">Timesheets</Link>
               </li>
             </ul></div>
           <div className="avata-account">
             <i className="far fa-user-circle user-icon"/>
             <div className="dropdown-menu-hover">
-              <Link className="dropdown-item" to="/Admin/Profile"><i className="fas fa-user-circle mr-2" />Profile</Link>
-              <Link className="dropdown-item" to="/Login"><i className="fas fa-sign-out-alt mr-2" />Logout</Link>
+              <Link className="dropdown-item" to="/admin/profile"><i className="fas fa-user-circle mr-2" />Profile</Link>
+              <Link className="dropdown-item" to="/login"><i className="fas fa-sign-out-alt mr-2" />Logout</Link>
             </div>
           </div>
         </nav>

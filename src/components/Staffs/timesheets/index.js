@@ -80,23 +80,6 @@ function Timesheets(params) {
               </table>
             </div>
           </div>
-          <div className="pagination-wraper">
-            <nav aria-label="...">
-              <ul className="pagination">
-                <li className="page-item disabled">
-                  <Link className="page-link" to="/" tabIndex={-1}><i className="fas fa-angle-left" /></Link>
-                </li>
-                <li className="page-item active"><Link className="page-link" to="/">1</Link></li>
-                <li className="page-item ">
-                  <Link className="page-link" to="/">2 <span className="sr-only">(current)</span></Link>
-                </li>
-                <li className="page-item"><Link className="page-link" to="/">3</Link></li>
-                <li className="page-item">
-                  <Link className="page-link" to="/"><i className="fas fa-angle-right" /></Link>
-                </li>
-              </ul>
-            </nav>
-          </div>
         </div>
       </div>
       {/*tables-saffs end */}

@@ -1,0 +1,88 @@
+{
+  "session": {
+    "email": "test@gmail.com",
+    "password": "123456"
+  },
+  "currentUser": [
+    {
+      "id": "B00004",
+      "name": "Nguyễn Sỹ Trung",
+      "sdt": "0392389977",
+      "address": "184258006",
+      "contractType": "text",
+      "birthDay": "28-01-1998",
+      "cmt": "123456",
+      "email": "trung9977.mta@gmail.com",
+      "dateJoinCompany": "12-08-2019",
+      "status": "1",
+      "sex": "Nam",
+      "role": "staff"
+    },
+    {
+      "id": "B00002",
+      "name": "Lê Văn Nghĩa",
+      "contractType": "text",
+      "birthDay": "28-01-1998",
+      "cmt": "1123456",
+      "sdt": "0392389977",
+      "address": "184258006",
+      "email": "trung9977.mta@gmail.com",
+      "dateJoinCompany": "12-08-2019",
+      "status": "1",
+      "sex": "Nam",
+      "role": "admin"
+    }
+  ],
+  "checkIn": {
+    "timeCheckIn": "16:31:52"
+  },
+  "checkOut": {
+    "timeCheckOut": "16:31:58"
+  },
+  "allDateStaff": [
+    {
+      "date": "10-2019"
+    },
+    {
+      "date": "11-2019"
+    },
+    {
+      "date": "12-2019"
+    },
+    {
+      "date": "01-2020"
+    }
+  ],
+  "staffTimeSheet": [
+    {
+      "date": "01-01-2020",
+      "checkIn": "08:10",
+      "checkOut": "17:00",
+      "report": "Yes"
+    },
+    {
+      "date": "02-01-2020",
+      "checkIn": "07:30",
+      "checkOut": "17:15",
+      "report": "No"
+    },
+    {
+      "date": "03-01-2020",
+      "checkIn": "08:01",
+      "checkOut": "16:30",
+      "report": "Yes"
+    },
+    {
+      "date": "04-01-2020",
+      "checkIn": "08:02",
+      "checkOut": "16:31",
+      "report": "Yes"
+    },
+    {
+      "date": "05-01-2020",
+      "checkIn": "10:10",
+      "checkOut": "18:30",
+      "report": "No"
+    }
+  ]
+}

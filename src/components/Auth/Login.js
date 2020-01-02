@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 import './styles.css';
 import Logo from '../../assets/img/Logo_Bunbu 1.png';
 
@@ -23,6 +24,9 @@ function Login(props) {
                 </label>
               </div>
               <button type="submit" className="btn btn-success" id="btn-login">Login</button>
+              <div id="link-reset-passwourd">
+                <Link to="/reset-passwourd">Reset passWourd?</Link>
+              </div>
             </form>
           </div>
         </div>

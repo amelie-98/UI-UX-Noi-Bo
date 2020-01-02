@@ -1,28 +1,38 @@
-import React from 'react';
+import React, {useEffect } from 'react';
 import {Link} from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import './styles.css';
 import * as modalActions from '../../../actions/modal';
+import * as accountActions from '../../../actions/account';
 import WrapModal from './modal/index';
 import AccountFrom from './from/AccountFrom';
 
 function Accounts(props) {
+  useEffect(() => { 
+    const {accountActions} = props;
+    const {fetchListAccountRequest} = accountActions;
+    fetchListAccountRequest();
+  }, [])
   const openFrom = () => {
-    const {modalActions} = props;
+    const {modalActions, accountActions} = props;
+    const {setAccountEditting} = accountActions;
+		setAccountEditting(null);
     const {showModel, changeModelTitle, changeModelContent} = modalActions;
     showModel();
     changeModelTitle('Add new Account');
     changeModelContent(<AccountFrom/>);
   };
-  const handleEditTask = () => {
-    const {modalActions} = props;
+  const handleEditTask = (account) => {
+    const {modalActions, accountActions} = props;
+    const {setAccountEditting} = accountActions;
+    setAccountEditting(account);
     const {showModel, changeModelTitle, changeModelContent} = modalActions;
     showModel();
     changeModelTitle('Update Account');
     changeModelContent(<AccountFrom/>);
   }
-  const showModalStatus = () => {
+  const showModalStatus = account => {
     const {modalActions} = props;
     const {showModel, hideModel, changeModelTitle, changeModelContent} = modalActions;
     showModel();
@@ -30,15 +40,22 @@ function Accounts(props) {
     changeModelContent(
       <div>
         <p>
-          Bạn có chắc chắn muốn thay đổi trạng thái của <span id="status-name">Le Van Nghia</span>?
+          Bạn có chắc chắn muốn xóa tài khoản <span id="status-name">{account.name}</span>?
         </p>
         <div className="btn-wrapper">
           <button type="button" onClick={hideModel} className="btn btn-secondary mr-2">close</button>
-          <button type="button" className="btn btn-success">change</button>
+          <button type="button" onClick={() => handleDeleteAccount(account)} className="btn btn-danger">Delete</button>
         </div>
       </div>
     );
   }
+  const handleDeleteAccount = (account) => {
+		const {id} = account;
+		const {accountActions} = props;
+		const {deleteAccountRequest} = accountActions;
+		deleteAccountRequest(id);
+	}
+  const {listAccount} = props;
   return(
     <main>
       {/* breadcrumb */}
@@ -46,8 +63,8 @@ function Accounts(props) {
         <div className="container-fluid">
           <nav id="breadcrumb-body" aria-label="breadcrumb">
             <ol className="breadcrumb">
-              <li className="breadcrumb-item"><Link to="/">Dashboard</Link></li>
-              <li className="breadcrumb-item active" aria-current="page">Saffs</li>
+              <li className="breadcrumb-item"><Link to="/Admin">Dashboard</Link></li>
+              <li className="breadcrumb-item active" aria-current="page">Staff</li>
             </ol>
           </nav>
         </div>
@@ -79,39 +96,28 @@ function Accounts(props) {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>B000001</td>
-                    <td>Lê Văn Nghĩa</td>
-                    <td>nghialv@bunbsoft.com</td>
-                    <td>Admin</td>
-                    <td><button type="button" className="btn btn-success">Active</button></td>
-                    <td className="setting-button">
-                      <button type="button" onClick={showModalStatus} className="btn btn-warning mr-2">Deactive</button>
-                      <button type="button" onClick={handleEditTask} className="btn btn-success">Edit</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>B000002</td>
-                    <td>Nguyễn Nam Hà</td>
-                    <td>nghialv@bunbsoft.com</td>
-                    <td>Admin</td>
-                    <td><button type="button" className="btn btn-success">Active</button></td>
-                    <td className="setting-button">
-                      <button type="button" onClick={showModalStatus} className="btn btn-warning mr-2">Deactive</button>
-                      <button type="button" onClick={handleEditTask} className="btn btn-success">Edit</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>B000003</td>
-                    <td>Hà Thế Trung</td>
-                    <td>nghialv@bunbsoft.com</td>
-                    <td>Admin</td>
-                    <td><button type="button" className="btn btn-success">Active</button></td>
-                    <td className="setting-button">
-                      <button type="button" onClick={showModalStatus} className="btn btn-warning mr-2">Deactive</button>
-                      <button type="button" onClick={handleEditTask} className="btn btn-success">Edit</button>
-                    </td>
-                  </tr>
+                  {
+                    listAccount.map((value, key) => {
+                      return (
+                        <tr key={key}>
+                          <td>{value.id}</td>
+                          <td>{value.name}</td>
+                          <td>{value.email}</td>
+                          <td>{value.role}</td>
+                          <td>
+                            {
+                              value.status === "1" ? <button type="button" className="btn btn-success">Active</button>
+                              : <button type="button" className="btn btn-warning">Deactive</button>
+                            }
+                            </td>
+                          <td className="setting-button">
+                            <button type="button" onClick={() => handleEditTask(value)} className="btn btn-success mr-2">Edit</button>
+                            <button type="button" onClick={() => showModalStatus(value)} className="btn btn-danger">Delete</button>
+                          </td>
+                        </tr> 
+                      )
+                    })
+                  }   
                 </tbody>
                 <thead>
                   <tr>
@@ -126,23 +132,6 @@ function Accounts(props) {
               </table>
             </div>
           </div>
-          <div className="pagination-wraper">
-            <nav aria-label="...">
-              <ul className="pagination">
-                <li className="page-item disabled">
-                  <Link className="page-link" to="/" tabIndex={-1}><i className="fas fa-angle-left" /></Link>
-                </li>
-                <li className="page-item active"><Link className="page-link" to="/">1</Link></li>
-                <li className="page-item ">
-                  <Link className="page-link" to="/">2 <span className="sr-only">(current)</span></Link>
-                </li>
-                <li className="page-item"><Link className="page-link" to="/">3</Link></li>
-                <li className="page-item">
-                  <Link className="page-link" to="/"><i className="fas fa-angle-right" /></Link>
-                </li>
-              </ul>
-            </nav>
-          </div>
         </div>
       </div>
       <WrapModal/>
@@ -153,12 +142,14 @@ function Accounts(props) {
 const mapStateToProps = (state) => {
   return {
     open: state.modalReducer.showModel,
+    listAccount: state.accountReducer.listAccount,
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     modalActions: bindActionCreators(modalActions, dispatch),
+    accountActions: bindActionCreators(accountActions, dispatch),
   };
 };
 

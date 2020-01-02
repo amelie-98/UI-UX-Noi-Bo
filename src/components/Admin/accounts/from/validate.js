@@ -1,18 +1,39 @@
 const validate = value => {
   const errors =	{};
-  const {email, Name, StaffID, Role, date} = value;
+  const {id, name,contractType, birthDay, cmt, sdt, address, email, dateJoinCompany, sex,  Role, date} = value;
+  if(!id){
+    errors.id = 'Please enter id';
+  }
+  if(!name){
+    errors.name = 'Please enter name';
+  } else if(name.trim() && name.length < 10){
+    errors.name = 'Name phải 10 ký tự';
+  }
+  if(!contractType){
+    errors.contractType = 'Please enter contractType';
+  }
+  if(!birthDay){
+    errors.birthDay = 'Please enter birthDay';
+  }
+  if(!cmt){
+    errors.cmt = 'Please enter cmt';
+  }
+  if(!sdt){
+    errors.sdt = 'Please enter phoneNumber';
+  } 
+  if(!address){
+    errors.address = 'Please enter address';
+  }
   if(!email){
     errors.email = 'Please enter email';
   } else if(!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)){
     errors.email = 'Invalid email address';
   }
-  if(!Name){
-    errors.Name = 'Please enter Name';
-  } else if(Name.trim() && Name.length < 10){
-    errors.Name = 'Name phải 10 ký tự';
+  if(!dateJoinCompany){
+    errors.dateJoinCompany = 'Please enter dateJoinCompany';
   }
-  if(!StaffID){
-    errors.StaffID = 'Please enter StaffID';
+  if(!sex){
+    errors.sex = 'Please enter sex';
   }
   if(!Role){
     errors.Role = 'Please enter Role';

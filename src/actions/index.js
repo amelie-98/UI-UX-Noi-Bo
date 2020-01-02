@@ -40,7 +40,7 @@ export const logOut = () => {
 //action getInfoCurrentUser
 export const getInfoCurrentUser = () => {
   return (dispatch) => {
-    axios.get(`${base_link}currentUser`)
+    axios.get(`${base_link}currentuser`)
       .then(function (res) {
         dispatch(setCurrentUser(res.data))
         dispatch(setErrorCode(0))
@@ -53,10 +53,10 @@ export const getInfoCurrentUser = () => {
 //action check in
 export const checkIn = () => {
   const body = {
-    timeCheckIn: moment().format('HH:mm:ss')
+    timeCheckIn: moment().format("HH:mm:ss DD/MM/YYYY")
   }
   return (dispatch) => {
-    axios.post(`${base_link}checkIn`, body)
+    axios.post(`${base_link}checkin`, body)
       .then(function (res) {
         dispatch(setStatusCheckIn(res.status))
       })
@@ -68,10 +68,10 @@ export const checkIn = () => {
 //action check out
 export const checkOut = () => {
   const body = {
-    timeCheckOut: moment().format('HH:mm:ss')
+    timeCheckOut: moment().format("HH:mm:ss DD/MM/YYYY")
   }
   return (dispatch) => {
-    axios.post(`${base_link}checkOut`, body)
+    axios.post(`${base_link}checkout`, body)
       .then(function (res) {
         dispatch(setStatusCheckOut(res.status))
       })
@@ -103,7 +103,7 @@ export const getStaffTimeSheet = (data) => {
   }
   console.log(data)
   return (dispatch) => {
-    axios.get(`${base_link}staffTimeSheet`, params)
+    axios.get(`${base_link}currentusertimesheet`, params)
       .then(function (res) {
         dispatch(setStaffTimeSheet(res.data))
       })
@@ -152,7 +152,7 @@ export const getStaffTimeSheetByAdmin = (data) => {
   }
   console.log(data)
   return (dispatch) => {
-    axios.get(`${base_link}staffTimeSheetByAdmin`, params)
+    axios.get(`${base_link}usertimesheet`, params)
       .then(function (res) {
         dispatch(setStaffTimeSheet(res.data))
       })

@@ -1,7 +1,8 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './header.css';
 import Logo from '../../../assets/img/Logo_Bunbu 1.png';
+import LogOut from '../../Auth/LogOut'
 
 function Header(props) {
   return (
@@ -26,10 +27,10 @@ function Header(props) {
               </li>
             </ul></div>
           <div className="avata-account">
-            <i className="far fa-user-circle user-icon"/>
+            <i className="far fa-user-circle user-icon" />
             <div className="dropdown-menu-hover">
               <Link className="dropdown-item" to="/Admin/Profile"><i className="fas fa-user-circle mr-2" />Profile</Link>
-              <Link className="dropdown-item" to="/Login"><i className="fas fa-sign-out-alt mr-2" />Logout</Link>
+              <LogOut />
             </div>
           </div>
         </nav>

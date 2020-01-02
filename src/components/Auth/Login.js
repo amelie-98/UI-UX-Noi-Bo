@@ -12,7 +12,12 @@ function Login(props) {
   }
   useEffect(() => {
     if (statusLogIn === 200) {
+      props.setStatusLogIn(0)
       history.push('/')
+    }
+    if (statusLogIn === 201) {
+      props.setStatusLogIn(0)
+      alert('sai tài khoản hoặc mật khẩu')
     }
     // eslint-disable-next-line
   }, [statusLogIn]);
@@ -52,6 +57,7 @@ const mapStatetoProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     logIn: () => { dispatch(actions.logIn()) },
+    setStatusLogIn: (data) => { dispatch(actions.setStatusLogIn(data)) }
   }
 }
 export default connect(mapStatetoProps, mapDispatchToProps)(Login);

@@ -15,16 +15,19 @@ function CheckIn(props) {
   const { statusCheckIn, errorCode } = props
   useEffect(() => {
     if (statusCheckIn === 200) {
+      props.setStatusCheckIn(0)
       console.log('check in thành công thì tiến hành đẩy vào trang check out')
       history.push('/Checkout')
+    }
+    if (statusCheckIn === 201) {
       props.setStatusCheckIn(0)
+      alert('CheckIn 1 lần 1 ngày thôi =))')
     }
     // eslint-disable-next-line
   }, [statusCheckIn]);
   const letCheckIn = () => {
     props.checkIn();
   }
-  console.log(statusCheckIn)
   return (
     <div>
       {

@@ -7,18 +7,22 @@ import MainAdmin from './components/Admin/main';
 import MainSaffs from './components/Staffs/main';
 import Login from './components/Auth/Login';
 import PasswordSetting from './components/Auth/PasswordSetting';
+import ResetPassword from './components/Auth/ResetPassword';
 
 function Main(props) {
   return (
     <div>
       <Switch>
-        <Route exact path="/Login">
+        <Route exact path="/login">
           <Login/>
         </Route>
-        <Route path="/PasswordSetting">
+        <Route path="/password-setting">
           <PasswordSetting/>
         </Route>
-        <Route path="/Admin">
+        <Route path="/reset-passwourd">
+          <ResetPassword/>
+        </Route>
+        <Route path="/admin">
           <MainAdmin/>
         </Route>
         <Route path="/">

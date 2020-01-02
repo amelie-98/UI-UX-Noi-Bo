@@ -14,13 +14,13 @@ function MainSaffs(props) {
         <Route exact path="/">
           <CheckIn/>
         </Route>
-        <Route path="/Checkout">
+        <Route path="/checkout">
           <CheckOut/>
         </Route>
-        <Route path="/Timesheets">
+        <Route path="/timesheets">
           <Timesheets/>
         </Route>
-        <Route path="/Profile">
+        <Route path="/profile">
           <Profile/>
         </Route>
       </Switch>

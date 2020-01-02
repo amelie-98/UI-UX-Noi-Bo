@@ -106,16 +106,18 @@ td.setting-button {
   margin-top: 11px;
 }
 /* tables-saffs end */
-/*pagination*/
-.pagination-wraper {
-  width: 95%;
-  display: flex;
-  justify-content: flex-end;
-}
-/*pagination end*/
 /* modal add */
 .form-group.row{
   font-family: var(--font-Roboto);
+}
+.form-group{
+  margin-bottom: 7px !important;
+}
+.col-form-label{
+  font-family: var(--font-Roboto);
+}
+.form-control{
+  font-size: 14px !important;
 }
 /* modal add end */
 .error{
@@ -131,3 +133,9 @@ td.setting-button {
 span#status-name {
   color: #dc3545;
 }
+@media (min-width: 576px){
+  .modal-dialog {
+    max-width: 700px !important;
+}
+}
+

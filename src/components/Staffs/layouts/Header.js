@@ -18,14 +18,14 @@ function Header(props) {
                 <Link className="nav-link" to="/">Home <span className="sr-only">(current)</span></Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/Timesheets">Timesheets</Link>
+                <Link className="nav-link" to="/timesheets">Timesheets</Link>
               </li>
             </ul></div>
           <div className="avata-account">
             <i className="far fa-user-circle user-icon" data-toggle="dropdown" />
             <div className="dropdown-menu-hover">
-              <Link className="dropdown-item" to="/Profile"><i className="fas fa-user-circle mr-2" />Profile</Link>
-              <Link className="dropdown-item" to="/Login"><i className="fas fa-sign-out-alt mr-2" />Logout</Link>
+              <Link className="dropdown-item" to="/profile"><i className="fas fa-user-circle mr-2" />Profile</Link>
+              <Link className="dropdown-item" to="/login"><i className="fas fa-sign-out-alt mr-2" />Logout</Link>
             </div>
           </div>
         </nav>

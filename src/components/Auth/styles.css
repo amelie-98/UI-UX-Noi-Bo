@@ -64,3 +64,22 @@ div#password-setting {
   margin-top: 31px;
 }
 /* --------------password setting end---------- */
+/* --------------reset password---------------- */
+div#link-reset-passwourd {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+div#link-reset-passwourd a {
+  color: #000000c9;
+  font-size: 15px;
+  font-family: var();
+  font-family: var(--font-Roboto);
+  text-decoration: none;
+}
+
+div#link-reset-passwourd a:hover {
+  color: #006afa;
+}
+/* --------------reset password end---------------- */

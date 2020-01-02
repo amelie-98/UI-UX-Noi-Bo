@@ -1,8 +1,26 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './styles.css';
 import Logo from '../../assets/img/Logo_Bunbu 1.png';
+import { connect } from 'react-redux';
+import * as actions from '../../actions/index';
+import { history } from '../../helpers/history/history';
 
 function Login(props) {
+  const { statusLogIn } = props
+  const letLogIn = () => {
+    props.logIn();
+  }
+  useEffect(() => {
+    if (statusLogIn === 200) {
+      props.setStatusLogIn(0)
+      history.push('/')
+    }
+    if (statusLogIn === 201) {
+      props.setStatusLogIn(0)
+      alert('sai tài khoản hoặc mật khẩu')
+    }
+    // eslint-disable-next-line
+  }, [statusLogIn]);
   return (
     <div className="container-fluid">
       <div className="account-wraper">
@@ -10,7 +28,7 @@ function Login(props) {
           <img src={Logo} id="logo-item" alt="Logo_Bunbu" />
           <div id="title-bunbu">BUNBU</div>
           <div className="account-wraper-from">
-            <form className="from-body">
+            <div className="from-body">
               <div className="form-group">
                 <input type="email" className="form-control border-none" placeholder="Enter email" id="email" />
               </div>
@@ -22,8 +40,8 @@ function Login(props) {
                   <input className="form-check-input" type="checkbox" /> Remember me
                 </label>
               </div>
-              <button type="submit" className="btn btn-success" id="btn-login">Login</button>
-            </form>
+              <button className="btn btn-success" id="btn-login" onClick={letLogIn}>Login</button>
+            </div>
           </div>
         </div>
       </div>
@@ -31,4 +49,15 @@ function Login(props) {
   )
 }
 
-export default Login;
+const mapStatetoProps = (state) => {
+  return {
+    statusLogIn: state.statusLogIn
+  }
+}
+const mapDispatchToProps = (dispatch) => {
+  return {
+    logIn: () => { dispatch(actions.logIn()) },
+    setStatusLogIn: (data) => { dispatch(actions.setStatusLogIn(data)) }
+  }
+}
+export default connect(mapStatetoProps, mapDispatchToProps)(Login);

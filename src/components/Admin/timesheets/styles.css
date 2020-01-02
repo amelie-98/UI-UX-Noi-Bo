@@ -196,3 +196,6 @@ td.setting-button {
   font-family: var(--font-Roboto);
   font-weight: 600;
 }
+.red_text{
+  color: red;
+}

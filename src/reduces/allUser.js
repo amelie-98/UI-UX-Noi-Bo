@@ -4,8 +4,8 @@ var initialState = [];
 var myReducer = (state = initialState, action) => {
   switch (action.type) {
 
-    case actionTypes.saveTimeSheetAdmin:
-      return action.payload;
+    case actionTypes.setAllUser:
+      return action.data;
 
     default:
       return state;

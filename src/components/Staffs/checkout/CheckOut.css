@@ -63,3 +63,66 @@
 .btn-checkout:hover{
   background-color: #11d463 !important;
 }
+/* css reactstrap */
+button.dropdown-toggle.btn.btn-secondary {
+  min-width: 12rem;
+}
+.dropdown-toggle::after{
+  display: none !important;
+}
+/* css reactstrap */
+.drop-down-select{
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+}
+.select-hour-minute{
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+}
+.select-hour-minute > .form-group{
+  margin: 0;
+}
+.select-hour{
+  display: flex;
+  flex: 1;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.select-hour > label{
+  display: flex;
+  justify-content: center;
+  margin: 0;
+}
+.select-hour > select{
+  width: 70px;
+}
+.select-minute{
+  display: flex;
+  flex: 1;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.select-minute > label{
+  display: flex;
+  justify-content: center;
+  margin: 0 10px 0 0;
+}
+.select-minute > input{
+  width: 70px;
+}
+/* ẩn mũi tên ở select và cho nội dung ra giữa */
+.select-hour > select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  text-indent: 1px;
+  text-overflow: '';
+  padding-left: 24px;
+}
+/* ẩn mũi tên ở select */
+/* ẩn phần input time đi */
+.hide_input_time > .select-hour-minute{
+  display: none;
+}
+/* ẩn phần input time đi */

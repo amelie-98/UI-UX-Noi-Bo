@@ -12,11 +12,12 @@ import staffList from './staffList';
 import allUser from './allUser'
 import errorCode from './errorCode'
 import dateRangePicker from './dateRangePicker'
+import timeCheckInToDay from './timeCheckInToDay'
 
 const myReducer = combineReducers({
+  form: formReducer,
   uiReducer: uiReducer,
   modalReducer: modalReducer,
-  form: formReducer,
   currentUser: currentUser,
   statusCheckIn: statusCheckIn,
   statusCheckOut: statusCheckOut,
@@ -26,7 +27,8 @@ const myReducer = combineReducers({
   staffList: staffList,
   allUser: allUser,
   errorCode: errorCode,
-  dateRangePicker: dateRangePicker
+  dateRangePicker: dateRangePicker,
+  timeCheckInToDay: timeCheckInToDay
 });
 
 export default myReducer;

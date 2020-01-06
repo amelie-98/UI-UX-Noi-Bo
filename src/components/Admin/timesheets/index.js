@@ -44,6 +44,7 @@ function Timesheets(props) {
     }
   });
   //end code datalist
+  console.log(staffTimeSheet)
   return (
     <div>
       {
@@ -89,9 +90,10 @@ function Timesheets(props) {
                       </div>
                     </div>
                     <div className="tables-title">
-                      <div className="tables-title-item">{`Inlate: ${_.filter(staffTimeSheet, n => moment(n.checkIn, "hh:mm").isAfter(moment('08:00', "HH:mm"))).length}`}</div>
-                      <div className="tables-title-item">{`Leave early: ${_.filter(staffTimeSheet, n => moment(n.checkOut, "hh:mm").isBefore(moment('17:00', "HH:mm"))).length}`}</div>
-                      <div className="tables-title-item">{`Nghỉ: ${_.filter(staffTimeSheet, n => n.report === 'No').length}`}</div>
+                      <div className="tables-title-item">{`Inlate: ${_.filter(staffTimeSheet, n => moment(n.start_at, "hh:mm").isAfter(moment('08:00', "HH:mm"))).length}`}</div>
+                      <div className="tables-title-item">{`Leave early: ${_.filter(staffTimeSheet, n => moment(n.end_at, "hh:mm").isBefore(moment('17:00', "HH:mm"))).length}`}</div>
+                      <div className="tables-title-item">{`Paid leave: ${_.filter(staffTimeSheet, n => n.status === 'paid leave').length}`}</div>
+                      <div className="tables-title-item">{`Unpaid leave: ${_.filter(staffTimeSheet, n => n.status === 'unpaid leave').length}`}</div>
                     </div>
                     <div className="saffs-table-content">
                       <table className="table table-hover">
@@ -100,6 +102,7 @@ function Timesheets(props) {
                             <th>Date</th>
                             <th>CheckIn</th>
                             <th>Checkout</th>
+                            <th>Status</th>
                             <th>Report</th>
                             <th />
                           </tr>
@@ -110,17 +113,25 @@ function Timesheets(props) {
                               <td>{item.date}</td>
                               <td
                                 className={classNames('', {
-                                  red_text: moment(item.checkIn, "hh:mm").isAfter(moment('8:00', "HH:mm")) === true
+                                  red_text: moment(item.start_at, "hh:mm").isAfter(moment('8:00', "HH:mm")) === true
                                 })}
                               >
-                                {item.checkIn}
+                                {item.start_at}
                               </td>
                               <td
                                 className={classNames('', {
-                                  red_text: moment(item.checkOut, "hh:mm").isBefore(moment('17:00', "HH:mm")) === true
+                                  red_text: moment(item.end_at, "hh:mm").isBefore(moment('17:00', "HH:mm")) === true
                                 })}
                               >
-                                {item.checkOut}
+                                {item.end_at}
+                              </td>
+                              <td
+                                className={classNames('', {
+                                  red_text: item.status === 'unpaid leave',
+                                  green_text: item.status === 'paid leave'
+                                })}
+                              >
+                                {item.status}
                               </td>
                               <td
                                 className={classNames('', {
@@ -138,6 +149,7 @@ function Timesheets(props) {
                             <th>Date</th>
                             <th>CheckIn</th>
                             <th>Checkout</th>
+                            <th>Status</th>
                             <th>Report</th>
                             <th />
                           </tr>

@@ -199,3 +199,11 @@ td.setting-button {
 .red_text{
   color: red;
 }
+.green_text{
+  color: #28a745;
+}
+.saffs-table-content{
+  height: 430px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}

@@ -1,7 +1,6 @@
 import React from 'react'
 import { Field, reduxForm } from 'redux-form'
 import renderTextField from '../FormHelper/TextField'
-import validate from './validate'
 
 let ChangePassWordForm = (props) => {
   //handleSubmit : khi click vào nút submit
@@ -56,7 +55,6 @@ let ChangePassWordForm = (props) => {
 ChangePassWordForm = reduxForm({
   // a unique name for the form
   form: 'changePassWord',
-  validate: validate //tất cả code validate để trong validate.js mà import vào
 })(ChangePassWordForm)
 
 export default ChangePassWordForm

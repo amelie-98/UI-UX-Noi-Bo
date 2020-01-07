@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, FormGroup, Label, Input } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter, FormGroup } from 'reactstrap';
 import './CheckOut.css';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions/index';
 import moment from 'moment'
 // import { history } from '../../../helpers/history/history';
-import NoCurrentUser from '../../Error/NoCurrentUser'
-import NotHaveAuthority from '../../Error/NotHaveAuthority'
-import classNames from 'classnames'
+import classNames from 'classnames';
+import { Field, reduxForm } from 'redux-form'
+import { compose } from 'redux';
+import renderTextField from './FormHelper/TextField'
+import renderTextAreaField from './FormHelper/TextAreaField'
 
 function CheckOut(props) {
-  const { timeCheckInToDay, statusCheckOut, errorCode } = props;
-  const [hour, setHour] = useState(0);
-  const [minute, setMinute] = useState(0);
-  const [reason, setReason] = useState('');
+  const { timeCheckInToDay, statusCheckOut, handleSubmit, invalid, submitting } = props;
   useEffect(() => {
     props.getInfoCurrentUser();
     props.getTimeCheckInToDay();
@@ -52,98 +51,67 @@ function CheckOut(props) {
       props.checkOut();
     }
   }
-  const finishReport = () => {
-    if (typeLeave !== 'Your Type Leave' && reason !== '' && isNaN(minute) === false) {
-      toggle();
-      if (typeLeave === 'Leave Early Half Day') {
-        props.reportInlateLeaveEarly(reason, typeLeave, 240);
-        props.checkOut();
-      }
-      else {
-        props.reportInlateLeaveEarly(reason, typeLeave, hour * 60 + minute);
-        props.checkOut();
-      }
-    }
-    else {
-      alert('Làm ơn điền đầy đủ và chính xác các thông tin ')
-    }
+  const finishReport = (data) => {
+    console.log(data)
   }
-  console.log(statusCheckOut)
+  // console.log(statusCheckOut)
   return (
-    <div>
-      {
-        errorCode === 401 ?
-          <NoCurrentUser />
-          :
-          errorCode === 403 ?
-            <NotHaveAuthority />
-            :
-            <div className="check-out">
-              <div className='total-content-check-out'>
-                <div className='title-check-out'>Check Out</div>
-                <div className='date-check-out'>{moment().format('L')}</div>
-                <button className="btn btn-checkout" onClick={letCheckOut}>Finish</button>
-                <div>
-                  <Modal isOpen={modal} toggle={toggle} className={className}>
-                    <ModalHeader toggle={toggle}>Why You Are Not Working Fully 8 Hours Today </ModalHeader>
-                    <ModalBody>
-                      <FormGroup>
-                        <Label for="exampleText">Reason</Label>
-                        <Input type="textarea" onChange={(e) => setReason(e.target.value)} />
-                      </FormGroup>
-                      <div
-                        className={classNames('drop-down-select', {
-                          hide_input_time: typeLeave === 'Leave Early Half Day'
-                        })}
-                      >
-                        {/* //drop down */}
-                        <Dropdown isOpen={dropdownOpen} toggle={toggle1}>
-                          <DropdownToggle caret>
-                            {typeLeave}
-                          </DropdownToggle>
-                          <DropdownMenu>
-                            <DropdownItem onClick={() => setTypeLeave('In Late')}>In Late</DropdownItem>
-                            <DropdownItem onClick={() => setTypeLeave('Leave Early')}>Leave Early</DropdownItem>
-                            <DropdownItem onClick={() => setTypeLeave('Leave Early Half Day')}>Leave Early Half Day</DropdownItem>
-                          </DropdownMenu>
-                        </Dropdown>
-                        {/* //drop down */}
-                        <div className='select-hour-minute'>
-                          <FormGroup className='select-hour'>
-                            <Label for="exampleSelect">Hour</Label>
-                            <Input type="select" onChange={(e) => setHour(Number(e.target.value))}>
-                              <option>0</option>
-                              <option>1</option>
-                              <option>2</option>
-                              <option>3</option>
-                              <option>4</option>
-                              <option>5</option>
-                              <option>6</option>
-                              <option>7</option>
-                              <option>8</option>
-                            </Input>
-                          </FormGroup>
-                          <FormGroup className='select-minute'>
-                            <Label for="exampleSelect">Minute</Label>
-                            <Input onChange={(e) => setMinute(Number(e.target.value))} />
-                          </FormGroup>
-                        </div>
-                      </div>
-                    </ModalBody>
-                    <ModalFooter>
-                      <Button color="primary" onClick={finishReport}>Check Out</Button>
-                      <Button color="secondary" onClick={toggle}>Cancel</Button>
-                    </ModalFooter>
-                  </Modal>
+    <form onSubmit={handleSubmit(finishReport)}>
+      <div className="check-out">
+        <div className='total-content-check-out'>
+          <div className='title-check-out'>Check Out</div>
+          <div className='date-check-out'>{moment().format('L')}</div>
+          <button className="btn btn-checkout" type='button' onClick={letCheckOut}>Finish</button>
+          <div>
+
+            <Modal isOpen={modal} toggle={toggle} className={className}>
+              <ModalHeader toggle={toggle}>Why You Are Not Working Fully 8 Hours Today </ModalHeader>
+              <ModalBody>
+                <FormGroup>
+                  <Field
+                    id='Reason'
+                    label='Reason'
+                    className="Reason"
+                    placeholder="Reason"
+                    name="Reason"
+                    component={renderTextAreaField}
+                  />
+                </FormGroup>
+                <div
+                  className={classNames('drop-down-select', {
+                    hide_input_time: typeLeave === 'Leave Early Half Day'
+                  })}
+                >
+                  {/* //drop down */}
+                  <Field name="favoriteColor" component="select">
+                    <option />
+                    <option value="ff0000">Red</option>
+                    <option value="00ff00">Green</option>
+                    <option value="0000ff">Blue</option>
+                  </Field>
+                  {/* //drop down */}
                 </div>
-              </div>
-            </div>
-      }
-    </div>
+              </ModalBody>
+              <ModalFooter>
+                <button
+                  //nếu như validation không hợp lệ hoặc khi form đang submit thì ngăn không cho submit
+                  disabled={invalid || submitting}
+                  className="btn btn-change-pass-word"
+                  type="submit"
+                >
+                  CheckOut
+              </button>
+              </ModalFooter>
+            </Modal>
+
+          </div>
+        </div>
+      </div>
+    </form>
   );
 }
 
-const mapStatetoProps = (state) => {
+const mapStateToProps = (state) => {
   return {
     currentUser: state.currentUser,
     statusCheckOut: state.statusCheckOut,
@@ -160,4 +128,13 @@ const mapDispatchToProps = (dispatch) => {
     reportInlateLeaveEarly: (reason, type, time) => { dispatch(actions.reportInlateLeaveEarly({ reason: reason, type: type, time: time })) }
   }
 }
-export default connect(mapStatetoProps, mapDispatchToProps)(CheckOut);
+
+const withConnect = connect(mapStateToProps, mapDispatchToProps);
+const withReduxForm = reduxForm({
+  form: 'CHECK_OUT',
+});
+
+export default compose(
+  withConnect,
+  withReduxForm
+)(CheckOut);

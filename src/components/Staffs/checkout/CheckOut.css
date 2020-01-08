@@ -121,8 +121,35 @@ button.dropdown-toggle.btn.btn-secondary {
   padding-left: 24px;
 }
 /* ẩn mũi tên ở select */
-/* ẩn phần input time đi */
-.hide_input_time > .select-hour-minute{
+.SDP{
+  display: flex;
+}
+.SDP >label{
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+.SDP > .SingleDatePicker{
+  margin-left: -8px;
+}
+.modal-body > .form-group > .col-form-label{
+  display: flex;
+  align-items: center;
+  padding-right: 0 !important;
+}
+.div-select-time{
+  display: flex;
+  justify-content: space-between;
+  width: 409px;
+}
+#time-picker-1,#time-picker-2{
+  width: 120px !important;
+}
+/* hide and show div  */
+.div-Leave-Early{
   display: none;
 }
-/* ẩn phần input time đi */
+.ShowDivLeaveEarly{
+  display: block;
+}
+/* hide and show div  */

@@ -55,7 +55,7 @@ let ChangePassWordForm = (props) => {
 
 ChangePassWordForm = reduxForm({
   // a unique name for the form
-  form: 'changePassWord',
+  form: 'CHANGE_PASSWORD',
   validate: validate //tất cả code validate để trong validate.js mà import vào
 })(ChangePassWordForm)
 

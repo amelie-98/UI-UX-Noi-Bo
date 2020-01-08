@@ -23,10 +23,9 @@ import {
 } from '@material-ui/pickers';
 
 function CheckOut(props) {
-  const { timeCheckInToDay, statusCheckOut, handleSubmit, invalid, submitting, pristine } = props;
+  const { statusCheckOut, handleSubmit, invalid, submitting, pristine } = props;
   useEffect(() => {
     props.getInfoCurrentUser();
-    props.getTimeCheckInToDay();
     // eslint-disable-next-line
   }, []);
   // useEffect(() => {
@@ -44,12 +43,8 @@ function CheckOut(props) {
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
   const letCheckOut = () => {
-    const startTime = moment(timeCheckInToDay, "HH:mm:ss")
-    const endTime = moment(moment().format("HH:mm:ss"), "HH:mm:ss")
-    const duration = moment.duration(endTime.diff(startTime));
-    const hours = duration.asHours();
-    if (hours < 88) {
-      console.log('mời nhập lý do đi vì sao không làm đủ 8 tiếng :))')
+    if (moment().isBefore(moment('17:00', "HH:mm"))) {
+      console.log('mời nhập lý do vì sao lại về sớm :))')
       toggle();
       props.reset(); // reset lại tất cả giá trị trong form bắt nhập lại từ đầu // đây là props của redux form
       setTypeLeave(''); //chuyển typeLeave về lại ban đầu để tránh show phần dưới ra
@@ -59,7 +54,12 @@ function CheckOut(props) {
     }
   }
   const finishReport = (data) => {
-    console.log(data)
+    if (typeLeave === 'Leave Early') {
+      props.reportInlateLeaveEarly(data.Reason, data.typeLeave, moment(date).format('DD/MM/YYYY'), moment(fromTime).format('HH:mm'), moment(toTime).format('HH:mm'), '')
+    }
+    if (typeLeave === 'Leave Early Half Day') {
+      props.reportInlateLeaveEarly(data.Reason, data.typeLeave, '', '', '', data.typeOff)
+    }
   }
   const [typeLeave, setTypeLeave] = useState('');
   const letSetTypeLeave = (e) => {
@@ -157,6 +157,22 @@ function CheckOut(props) {
                     </div>
                   </MuiPickersUtilsProvider>
                 </div>
+                <div className={classNames('div-Leave-Early-Half-Day', {
+                  ShowDivLeaveEarlyHalfDay: typeLeave === 'Leave Early Half Day',
+                })}>
+                  <Field
+                    id='type-off'
+                    label='Type-Off'
+                    className="type-off"
+                    placeholder="Type-Off"
+                    name="typeOff"
+                    component={renderSelectField}
+                  >
+                    <option value="" />
+                    <option value="Paid leave">Paid leave</option>
+                    <option value="No Paid leave">No Paid leave</option>
+                  </Field>
+                </div>
               </ModalBody>
               <ModalFooter>
                 <button
@@ -182,7 +198,6 @@ const mapStateToProps = (state) => {
     currentUser: state.currentUser,
     statusCheckOut: state.statusCheckOut,
     errorCode: state.errorCode,
-    timeCheckInToDay: state.timeCheckInToDay
   }
 }
 const mapDispatchToProps = (dispatch) => {
@@ -190,8 +205,7 @@ const mapDispatchToProps = (dispatch) => {
     checkOut: () => { dispatch(actions.checkOut()) },
     setStatusCheckOut: (data) => { dispatch(actions.setStatusCheckOut(data)) },
     getInfoCurrentUser: () => { dispatch(actions.getInfoCurrentUser()) },
-    getTimeCheckInToDay: () => { dispatch(actions.getTimeCheckInToDay()) },
-    reportInlateLeaveEarly: (reason, type, time) => { dispatch(actions.reportInlateLeaveEarly({ reason: reason, type: type, time: time })) }
+    reportInlateLeaveEarly: (reason, typeLeave, dayOffset, from_time, to_time, typeOff) => { dispatch(actions.reportInlateLeaveEarly({ reason: reason, typeLeave: typeLeave, dayOffset: dayOffset, from_time: from_time, to_time: to_time, typeOff: typeOff })) }
   }
 }
 

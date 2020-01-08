@@ -152,4 +152,10 @@ button.dropdown-toggle.btn.btn-secondary {
 .ShowDivLeaveEarly{
   display: block;
 }
+.div-Leave-Early-Half-Day{
+  display: none;
+}
+.ShowDivLeaveEarlyHalfDay{
+  display: block;
+}
 /* hide and show div  */

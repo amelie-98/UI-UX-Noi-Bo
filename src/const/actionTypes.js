@@ -10,5 +10,4 @@ export default {
   setErrorCode: "SET_ERROR_CODE",
   setAllUser: "SET_ALL_USER",
   setDateRangePicker: "SET_DATE_RANGE_PICKER",
-  setTimeCheckInToDay: "SET_TIME_CHECK_IN_TO_DAY"
 };

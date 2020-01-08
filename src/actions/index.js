@@ -80,38 +80,25 @@ export const checkOut = () => {
       })
   }
 }
-//action get time check in to day
-export const getTimeCheckInToDay = () => {
-  const params = {
-    from_date: moment().format('L'),
-    to_date: moment().format('L')
-  }
-  return (dispatch) => {
-    axios.get(`${base_link}currentusertimesheet`, params)
-      .then(function (res) {
-        dispatch(setTimeCheckInToDay(res.data[0].start_at))
-      })
-      .catch(function (error) {
-        console.log(error);
-      })
-  }
-}
 //action report in late leave early
 export const reportInlateLeaveEarly = (data) => {
   const body = {
-    date: moment().format('L'),
     reason: data.reason,
-    type: data.type,
-    time: data.time
+    typeLeave: data.typeLeave,
+    dayOffset: data.dayOffset,
+    from_time: data.from_time,
+    to_time: data.to_time,
+    typeOff: data.typeOff
   }
+  console.log(data)
   return (dispatch) => {
-    axios.post(`${base_link}reportInlateLeaveEarly`, body)
-      .then(function (res) {
-        console.log(res.data)
-      })
-      .catch(function (error) {
-        console.log(error);
-      })
+    // axios.post(`${base_link}reportInlateLeaveEarly`, body)
+    //   .then(function (res) {
+    //     console.log(res.data)
+    //   })
+    //   .catch(function (error) {
+    //     console.log(error);
+    //   })
   }
 }
 //action change password

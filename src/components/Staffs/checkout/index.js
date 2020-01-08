@@ -8,7 +8,7 @@ import moment from 'moment'
 import classNames from 'classnames';
 import { Field, reduxForm } from 'redux-form'
 import { compose } from 'redux';
-import renderTextField from './FormHelper/TextField'
+// import renderTextField from './FormHelper/TextField'
 import renderTextAreaField from './FormHelper/TextAreaField'
 import renderSelectField from './FormHelper/SeleactField';
 import validate from './redux-form/validate'
@@ -19,7 +19,6 @@ import DateFnsUtils from '@date-io/date-fns';
 import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
-  KeyboardDatePicker,
 } from '@material-ui/pickers';
 
 function CheckOut(props) {
@@ -90,7 +89,7 @@ function CheckOut(props) {
         <div>
           <Modal isOpen={modal} toggle={toggle} className={className}>
             <form onSubmit={handleSubmit(finishReport)}>
-              <ModalHeader toggle={toggle}>Why You Are Not Working Fully 8 Hours Today </ModalHeader>
+              <ModalHeader toggle={toggle}>Why are you leave early ?</ModalHeader>
               <ModalBody>
                 <Field
                   id='Reason'
@@ -186,7 +185,6 @@ function CheckOut(props) {
               </ModalFooter>
             </form>
           </Modal>
-
         </div>
       </div>
     </div>

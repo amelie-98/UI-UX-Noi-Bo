@@ -5,25 +5,20 @@ import { connect } from 'react-redux';
 import * as actions from '../../../actions/index';
 import moment from 'moment'
 // import { history } from '../../../helpers/history/history';
-import classNames from 'classnames';
+// import classNames from 'classnames';
 import { Field, reduxForm } from 'redux-form'
 import { compose } from 'redux';
 // import renderTextField from './FormHelper/TextField'
 import renderTextAreaField from './FormHelper/TextAreaField'
-import renderSelectField from './FormHelper/SeleactField';
 import validate from './redux-form/validate'
-import { SingleDatePicker } from "react-dates";
-import "react-dates/lib/css/_datepicker.css";
-import 'date-fns';
-import DateFnsUtils from '@date-io/date-fns';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-} from '@material-ui/pickers';
 
 function CheckOut(props) {
-  const { statusCheckOut, handleSubmit, invalid, submitting, pristine } = props;
+  const { statusCheckOut, staffTimeSheet, handleSubmit, invalid, submitting, pristine } = props;
   useEffect(() => {
+    props.getStaffTimeSheet({
+      startTime: moment().format('L'),
+      endTime: moment().format('L')
+    });
     props.getInfoCurrentUser();
     // eslint-disable-next-line
   }, []);
@@ -42,44 +37,22 @@ function CheckOut(props) {
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
   const letCheckOut = () => {
-    if (moment().isBefore(moment('17:00', "HH:mm"))) {
-      console.log('mời nhập lý do vì sao lại về sớm :))')
+    const startTime = moment(staffTimeSheet[0].start_at, "HH:mm:ss")
+    const endTime = moment(moment().format("HH:mm:ss"), "HH:mm:ss")
+    const duration = moment.duration(endTime.diff(startTime));
+    const hours = duration.asHours();
+    if (hours >= -888) {
       toggle();
       props.reset(); // reset lại tất cả giá trị trong form bắt nhập lại từ đầu // đây là props của redux form
-      setTypeLeave(''); //chuyển typeLeave về lại ban đầu để tránh show phần dưới ra
     }
     else {
       props.checkOut();
     }
   }
   const finishReport = (data) => {
-    if (typeLeave === 'Leave Early') {
-      props.reportInlateLeaveEarly(data.Reason, data.typeLeave, moment(date).format('DD/MM/YYYY'), moment(fromTime).format('HH:mm'), moment(toTime).format('HH:mm'), '')
-    }
-    if (typeLeave === 'Leave Early Half Day') {
-      props.reportInlateLeaveEarly(data.Reason, data.typeLeave, '', '', '', data.typeOff)
-    }
+    props.reportInlateLeaveEarly(data.Reason)
+    console.log(data)
   }
-  const [typeLeave, setTypeLeave] = useState('');
-  const letSetTypeLeave = (e) => {
-    setTypeLeave(e.target.value)
-  }
-  //state for SingleDatePicker
-  const [date, setDate] = useState(moment());
-  const [focused, setFocused] = useState(false);
-  //state for SingleDatePicker
-  //time picker
-  const [fromTime, setFromTime] = useState(moment());
-  const handleFromTimeChange = time => {
-    console.log(moment(time).format('HH:mm'))
-    setFromTime(time);
-  };
-  const [toTime, setToTime] = useState(moment());
-  const handleToTimeChange = time => {
-    console.log(moment(time).format('HH:mm'))
-    setToTime(time);
-  };
-  //time picker
   return (
     <div className="check-out">
       <div className='total-content-check-out'>
@@ -99,79 +72,6 @@ function CheckOut(props) {
                   name="Reason"
                   component={renderTextAreaField}
                 />
-                <Field
-                  id='typeLeave'
-                  label='Type Leave'
-                  className="typeLeave"
-                  placeholder="typeLeave"
-                  name="typeLeave"
-                  component={renderSelectField}
-                  onChange={letSetTypeLeave}
-                >
-                  <option value="" />
-                  <option value="Leave Early">Leave Early</option>
-                  <option value="Leave Early Half Day">Leave Early Half Day</option>
-                </Field>
-                <div
-                  className={classNames('div-Leave-Early', {
-                    ShowDivLeaveEarly: typeLeave === 'Leave Early',
-                  })}
-                >
-                  <div className='SDP'>
-                    <label className="col-sm-3 col-form-label">Time Offset(*)</label>
-                    <SingleDatePicker
-                      date={date} // momentPropTypes.momentObj or null
-                      onDateChange={date => setDate(date)} // PropTypes.func.isRequired
-                      focused={focused} // PropTypes.bool
-                      onFocusChange={() => setFocused(!focused)} // PropTypes.func.isRequired
-                      id="your_unique_id" // PropTypes.string.isRequired,
-                      numberOfMonths={1}
-                      displayFormat="DD-MM-YYYY"
-                    />
-                  </div>
-                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <div className='div-select-time'>
-                      <KeyboardTimePicker
-                        margin="normal"
-                        id="time-picker-1"
-                        label="From Time"
-                        value={fromTime}
-                        onChange={handleFromTimeChange}
-                        // ampm={false} để đồng hồ thành 24h
-                        KeyboardButtonProps={{
-                          'aria-label': 'change time',
-                        }}
-                      />
-                      <KeyboardTimePicker
-                        margin="normal"
-                        id="time-picker-2"
-                        label="To Time"
-                        value={toTime}
-                        onChange={handleToTimeChange}
-                        // ampm={false} để đồng hồ thành 24h
-                        KeyboardButtonProps={{
-                          'aria-label': 'change time',
-                        }}
-                      />
-                    </div>
-                  </MuiPickersUtilsProvider>
-                </div>
-                <div className={classNames('div-Leave-Early-Half-Day', {
-                  ShowDivLeaveEarlyHalfDay: typeLeave === 'Leave Early Half Day',
-                })}>
-                  <Field
-                    id='type-off'
-                    label='Type-Off'
-                    className="type-off"
-                    placeholder="Type-Off"
-                    name="typeOff"
-                    component={renderSelectField}
-                  >
-                    <option value="" />
-                    <option value="Paid leave">Paid leave</option>
-                    <option value="No Paid leave">No Paid leave</option>
-                  </Field>
-                </div>
               </ModalBody>
               <ModalFooter>
                 <button
@@ -196,6 +96,7 @@ const mapStateToProps = (state) => {
     currentUser: state.currentUser,
     statusCheckOut: state.statusCheckOut,
     errorCode: state.errorCode,
+    staffTimeSheet: state.staffTimeSheet,
   }
 }
 const mapDispatchToProps = (dispatch) => {
@@ -203,7 +104,8 @@ const mapDispatchToProps = (dispatch) => {
     checkOut: () => { dispatch(actions.checkOut()) },
     setStatusCheckOut: (data) => { dispatch(actions.setStatusCheckOut(data)) },
     getInfoCurrentUser: () => { dispatch(actions.getInfoCurrentUser()) },
-    reportInlateLeaveEarly: (reason, typeLeave, dayOffset, from_time, to_time, typeOff) => { dispatch(actions.reportInlateLeaveEarly({ reason: reason, typeLeave: typeLeave, dayOffset: dayOffset, from_time: from_time, to_time: to_time, typeOff: typeOff })) }
+    reportInlateLeaveEarly: (reason) => { dispatch(actions.reportInlateLeaveEarly({ reason: reason })) },
+    getStaffTimeSheet: (data) => { dispatch(actions.getStaffTimeSheet(data)) },
   }
 }
 

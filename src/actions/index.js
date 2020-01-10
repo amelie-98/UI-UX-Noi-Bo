@@ -1,6 +1,9 @@
 import actionTypes from '../const/actionTypes';
 import axios from 'axios'
 import moment from 'moment'
+import { showLoading } from './ui'
+import { hideLoading } from './ui'
+
 // post: tạo mới
 // put: ghi đè(toàn bộ) hoặc tạo mới 1 resource
 // patch: cập một 1 phần của resource
@@ -84,11 +87,6 @@ export const checkOut = () => {
 export const reportInlateLeaveEarly = (data) => {
   const body = {
     reason: data.reason,
-    typeLeave: data.typeLeave,
-    dayOffset: data.dayOffset,
-    from_time: data.from_time,
-    to_time: data.to_time,
-    typeOff: data.typeOff
   }
   console.log(data)
   return (dispatch) => {
@@ -118,12 +116,13 @@ export const changePassWord = (data) => {
 }
 //action getStaffTimeSheet(gửi kèm date) (for only Staff)
 export const getStaffTimeSheet = (data) => {
+  console.log(data)
   const params = {
     from_date: data.startTime,
     to_date: data.endTime
   }
-  console.log(data)
   return (dispatch) => {
+    dispatch(showLoading())
     axios.get(`${base_link}currentusertimesheet`, params)
       .then(function (res) {
         dispatch(setStaffTimeSheet(res.data))
@@ -131,6 +130,9 @@ export const getStaffTimeSheet = (data) => {
       .catch(function (error) {
         console.log(error);
       })
+      .finally(function () {
+        dispatch(hideLoading())
+      });
   }
 }
 //action call Api for only Admin
@@ -173,6 +175,7 @@ export const getStaffTimeSheetByAdmin = (data) => {
   }
   console.log(data)
   return (dispatch) => {
+    dispatch(showLoading())
     axios.get(`${base_link}usertimesheet`, params)
       .then(function (res) {
         dispatch(setStaffTimeSheet(res.data))
@@ -180,6 +183,9 @@ export const getStaffTimeSheetByAdmin = (data) => {
       .catch(function (error) {
         console.log(error);
       })
+      .finally(function () {
+        dispatch(hideLoading())
+      });
   }
 }
 //action searchOnTimeSheet

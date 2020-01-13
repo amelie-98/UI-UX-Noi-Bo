@@ -11,7 +11,7 @@ import DateRangePicker from '../../DateRangePicker'
 
 function Timesheets(props) {
   const [id, setID] = useState(null);
-  const { allUser, errorCode, staffTimeSheet, dateRangePicker } = props
+  const { allUser, staffTimeSheet, dateRangePicker } = props
   console.log(staffTimeSheet)
   const [type, setType] = useState('All');
   let array = [];
@@ -82,11 +82,10 @@ function Timesheets(props) {
                     <input className="form-control mr-sm-2" type="search" list="users" id="someid" />
                     <datalist id="users" className="datalist scrollable">
                       {_.map(allUser, (item, index) => (
-                        <option data-id={item.id} value={item.name} key={index} >{item.mail}</option>
+                        <option data-id={item.id} value={item.name} key={index} >{item.email}</option>
                       ))}
                     </datalist>
                   </div>
-                  <button className="btn btn-search my-2 my-sm-0" type="submit"><i className="fas fa-search" /></button>
                 </form>
               </div>
             </div>
@@ -98,6 +97,9 @@ function Timesheets(props) {
                   <div className="tables-title-item" onClick={() => setType('Leave early')}>{`Leave early: ${_.filter(staffTimeSheet.data, n => moment(n.end_at, "hh:mm").isBefore(moment('17:00', "HH:mm"))).length}`}</div>
                   <div className="tables-title-item">{`Paid leave: ${_.filter(staffTimeSheet.data, n => n.status === 'paid leave').length}`}</div>
                   <div className="tables-title-item">{`Unpaid leave: ${_.filter(staffTimeSheet.data, n => n.status === 'unpaid leave').length}`}</div>
+                  <div className="tables-title-item">{`Total work: ${_.reduce(staffTimeSheet.data, (total, item) => total + Number(item.time_work), 0)}`}</div>
+                  <div className="tables-title-item">{`Total Off: ${_.reduce(staffTimeSheet.data, (total, item) => total + Number(item.time_off), 0)}`}</div>
+                  <div className="tables-title-item">{`Total Offset: ${staffTimeSheet.statistic.total_offset}`}</div>
                 </div>
                 <div className="saffs-table-content">
                   <table className="table table-hover">
@@ -107,7 +109,6 @@ function Timesheets(props) {
                         <th>CheckIn</th>
                         <th>Checkout</th>
                         <th>Status</th>
-                        <th>Report</th>
                         <th />
                       </tr>
                     </thead>
@@ -137,13 +138,6 @@ function Timesheets(props) {
                           >
                             {item.status}
                           </td>
-                          <td
-                            className={classNames('', {
-                              red_text: item.report === 'No'
-                            })}
-                          >
-                            {item.report}
-                          </td>
                           <td className="setting-button"><button type="button" className="btn btn-success">Report</button></td>
                         </tr>
                       ))}
@@ -154,7 +148,6 @@ function Timesheets(props) {
                         <th>CheckIn</th>
                         <th>Checkout</th>
                         <th>Status</th>
-                        <th>Report</th>
                         <th />
                       </tr>
                     </thead>
@@ -173,7 +166,6 @@ function Timesheets(props) {
 const mapStatetoProps = (state) => {
   return {
     currentUser: state.currentUser,
-    errorCode: state.errorCode,
     allUser: state.allUser,
     staffTimeSheet: state.staffTimeSheet,
     dateRangePicker: state.dateRangePicker

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../../../assets/img/Logo_Bunbu 1.png';
-import LogOut from '../../Auth/LogOut';
 
 function Header(props) {
   return (
@@ -26,7 +25,6 @@ function Header(props) {
             <i className="far fa-user-circle user-icon" data-toggle="dropdown" />
             <div className="dropdown-menu-hover">
               <Link className="dropdown-item" to="/Profile"><i className="fas fa-user-circle mr-2" />Profile</Link>
-              <LogOut />
             </div>
           </div>
         </nav>

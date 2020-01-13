@@ -13,7 +13,7 @@ import renderTextAreaField from './FormHelper/TextAreaField'
 import validate from './redux-form/validate'
 
 function CheckOut(props) {
-  const { statusCheckOut, staffTimeSheet, handleSubmit, invalid, submitting, pristine } = props;
+  const { staffTimeSheet, handleSubmit, invalid, submitting, pristine } = props;
   useEffect(() => {
     props.getStaffTimeSheet({
       startTime: moment().format('L'),
@@ -57,7 +57,7 @@ function CheckOut(props) {
     <div className="check-out">
       <div className='total-content-check-out'>
         <div className='title-check-out'>Check Out</div>
-        <div className='date-check-out'>{moment().format('L')}</div>
+        <div className='date-check-out'>{moment().format('HH:mm DD/MM/YYYY')}</div>
         <button className="btn btn-checkout" onClick={letCheckOut}>Finish</button>
         <div>
           <Modal isOpen={modal} toggle={toggle} className={className}>

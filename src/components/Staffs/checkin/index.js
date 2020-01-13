@@ -17,7 +17,7 @@ function CheckIn(props) {
     props.getInfoCurrentUser();
     // eslint-disable-next-line
   }, []);
-  const { statusCheckIn, handleSubmit, invalid, submitting, pristine } = props;
+  const { handleSubmit, invalid, submitting, pristine } = props;
   // useEffect(() => {
   //   if (statusCheckIn === 200) {
   //     props.setStatusCheckIn(0)

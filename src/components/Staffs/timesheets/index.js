@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, Input } from 'reactstrap';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions/index';
 import moment from 'moment'
 import classNames from 'classnames'
 import _ from 'lodash'
 import DateRangePicker from '../../DateRangePicker'
+import { SingleDatePicker } from "react-dates";
+import "react-dates/lib/css/_datepicker.css";
 
 function Timesheets(props) {
-  const { staffTimeSheet, dateRangePicker } = props;
+  const { staffTimeSheet, dateRangePicker, className } = props;
   const [type, setType] = useState('All');
   let array = [];
   if (type === 'All') {
@@ -28,6 +31,44 @@ function Timesheets(props) {
     props.getStaffTimeSheet(dateRangePicker);
     // eslint-disable-next-line
   }, [dateRangePicker]);
+  const [listDayOff, setListDayOff] = useState('');
+  //code modal
+  const [modal, setModal] = useState(false);
+  const toggle = () => setModal(!modal);
+  //code modal
+  //code SingleDatePicker
+  const [date, setDate] = useState(moment().subtract(1, 'days'));
+  const [focused, setFocused] = useState(false);
+  const selectDate = (date) => {
+    if (listDayOff === '') {
+      setListDayOff(`${listDayOff}${date.format('DD/MM/YYYY')}`) //nếu chuỗi rỗng thì đẩy thêm ngày vào
+    }
+    else {
+      if (listDayOff.lastIndexOf(date.format('DD/MM/YYYY')) === -1) {
+        setListDayOff(`${listDayOff},${date.format('DD/MM/YYYY')}`) //nếu ngày mới thêm không trùng vs ngày có trong chuỗi cũ thì thêm vào và ngăn cách bới dấu phẩy
+      }
+      else {
+        if (listDayOff.lastIndexOf(date.format('DD/MM/YYYY')) === 0) {
+          setListDayOff(_.replace(listDayOff, `${date.format('DD/MM/YYYY')},`, '')) //nếu ngày thêm vào trùng với ngày đầu tiên( vị trí 0 trong chuỗi) thì xóa ngày trùng và dấu phẩy sau nó đi
+          if (listDayOff === date.format('DD/MM/YYYY')) {
+            setListDayOff(_.replace(listDayOff, `${date.format('DD/MM/YYYY')}`, '')) //nếu ngày thêm vào trùng với chuỗi (chuỗi chỉ có duy nhất 1 ngày và trùng luôn) thì xóa ngày trùng đó đi
+          }
+        }
+        else {
+          setListDayOff(_.replace(listDayOff, `,${date.format('DD/MM/YYYY')}`, '')) //nếu ngày thêm vào không trùng với ngày đầu tiên( vị trí 0 trong chuỗi) thì xóa ngày trùng và dấu phẩy trước nó đi
+          // setListDayOff(_.replace(listDayOff, `${date.format('DD/MM/YYYY')},`, ''))
+        }
+      }
+    }
+  }
+  //code SingleDatePicker
+  //code call api offSet
+  const [daySelect, setDaySelect] = useState('');
+  const letOffSet = () => {
+    props.offSet(daySelect,_.split(listDayOff, ','))
+    // toggle();
+  }
+  //code call api offSet
   return (
     <div>
       {array === undefined ? null
@@ -118,14 +159,61 @@ function Timesheets(props) {
                             >
                               {item.status}
                             </td>
-                            <td
-                              className={classNames('', {
-                                red_text: item.report === 'No'
-                              })}
-                            >
-                              {item.report}
+                            <td className="setting-button">
+                              <div className='report-offset'>
+                                <button type="button" className="btn btn-success">Report</button>
+                                {
+                                  item.time_work > 8 ?
+                                    <div>
+                                      < button
+                                        type="button"
+                                        className="btn btn-primary btn-offset"
+                                        onClick={() => {
+                                          toggle();
+                                          setDaySelect(item.date)
+                                        }}
+                                      >OffSet</button>
+                                      <Modal isOpen={modal} toggle={toggle} className={className}>
+                                        <ModalHeader toggle={toggle}>Modal title</ModalHeader>
+                                        <ModalBody>
+                                          <FormGroup>
+                                            <Label >Choose one or many day off</Label>
+                                            <Input
+                                              placeholder="Your Day off"
+                                              readOnly={true}
+                                              value={listDayOff}
+                                            />
+                                          </FormGroup>
+                                          <div className='SDP'>
+                                            <label className="col-sm-3 col-form-label">Day Off(*)</label>
+                                            <SingleDatePicker
+                                              date={date} // momentPropTypes.momentObj or null
+                                              onDateChange={(date) => {
+                                                setDate(date)
+                                                selectDate(date)
+                                              }} // PropTypes.func.isRequired
+                                              focused={focused} // PropTypes.bool
+                                              onFocusChange={() => setFocused(!focused)} // PropTypes.func.isRequired
+                                              id="your_unique_id" // PropTypes.string.isRequired,
+                                              numberOfMonths={1}
+                                              displayFormat="DD-MM-YYYY"
+                                              // chặn các ngày từ hôm nay đổ đi(chỉ cho chọn các ngày trong quá khứ không bao gồm cả ngày được phép làm bù)
+                                              isOutsideRange={day => moment.duration(moment().diff(day)).asDays() < 1}
+                                              keepOpenOnDateSelect={true} //giữ cho calendar không đóng khi click xong
+                                            />
+                                          </div>
+                                        </ModalBody>
+                                        <ModalFooter>
+                                          <Button color="primary" onClick={letOffSet} disabled={listDayOff === ''}>Finish</Button>
+                                          <Button color="secondary" onClick={toggle}>Cancel</Button>
+                                        </ModalFooter>
+                                      </Modal>
+                                    </div>
+                                    :
+                                    null
+                                }
+                              </div>
                             </td>
-                            <td className="setting-button"><button type="button" className="btn btn-success">Report</button></td>
                           </tr>
                         ))}
                       </tbody>
@@ -149,7 +237,7 @@ function Timesheets(props) {
           {/*tables-staffs end */}
         </main>
       }
-    </div>
+    </div >
   )
 }
 
@@ -163,7 +251,8 @@ const mapStatetoProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     getStaffTimeSheet: (data) => { dispatch(actions.getStaffTimeSheet(data)) },
-    getInfoCurrentUser: () => { dispatch(actions.getInfoCurrentUser()) }
+    getInfoCurrentUser: () => { dispatch(actions.getInfoCurrentUser()) },
+    offSet: (date, for_date) => { dispatch(actions.offSet({ date: date, for_date: for_date })) }
   }
 }
 export default connect(mapStatetoProps, mapDispatchToProps)(Timesheets);

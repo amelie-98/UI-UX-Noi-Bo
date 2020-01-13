@@ -21,7 +21,7 @@ function General(props) {
               <div className='content-left-private-information-child-right'>
                 <p>{currentUser.name}</p>
                 <p>{currentUser.sex}</p>
-                <p>{currentUser.birthDay}</p>
+                <p>{currentUser.date_of_birth}</p>
               </div>
             </div>
             <div className='content-right-private-information'>
@@ -31,8 +31,8 @@ function General(props) {
                 <p className="text-item-ganeral">Address:</p>
               </div>
               <div className='content-right-private-information-child-right'>
-                <p>{currentUser.mail}</p>
-                <p>{currentUser.sdt}</p>
+                <p>{currentUser.email}</p>
+                <p>{currentUser.phone_number}</p>
                 <p>{currentUser.address}</p>
               </div>
             </div>
@@ -47,7 +47,7 @@ function General(props) {
                 <p className="text-item-ganeral">Position:</p>
               </div>
               <div className='content-left-staff-information-child-right'>
-                <p>{currentUser.id}</p>
+                <p>{currentUser.code}</p>
                 <p>{currentUser.position}</p>
               </div>
             </div>
@@ -57,8 +57,8 @@ function General(props) {
                 <p className="text-item-ganeral">Join Date:</p>
               </div>
               <div className='content-right-staff-information-child-right'>
-                <p>{currentUser.contractType}</p>
-                <p>{currentUser.dateJoinCompany}</p>
+                <p>{currentUser.contract_type}</p>
+                <p>{currentUser.joining_date}</p>
               </div>
             </div>
           </div>

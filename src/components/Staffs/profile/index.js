@@ -33,7 +33,7 @@ function Profile(props) {
                   <img className='img' src={Avatar} alt='avartar-img' />
                   <div className='name-id'>
                     <p>{currentUser.name}</p>
-                    <p>{currentUser.id}</p>
+                    <p>{currentUser.code}</p>
                   </div>
                 </div>
                 <div className='menu-profile-left'>

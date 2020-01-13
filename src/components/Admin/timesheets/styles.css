@@ -208,3 +208,9 @@ td.setting-button {
   overflow-x: hidden;
   overflow-y: scroll;
 }
+.report-offset{
+  display: flex;
+}
+.btn-offset{
+ margin-left: 10px !important;
+}

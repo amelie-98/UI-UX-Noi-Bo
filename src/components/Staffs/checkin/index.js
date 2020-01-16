@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import './CheckIn.css';
 import { connect } from 'react-redux';
@@ -13,10 +13,6 @@ import renderTextAreaField from './FormHelper/TextAreaField'
 import validate from './redux-form/validate'
 
 function CheckIn(props) {
-  useEffect(() => {
-    props.getInfoCurrentUser();
-    // eslint-disable-next-line
-  }, []);
   const { handleSubmit, invalid, submitting, pristine } = props;
   // useEffect(() => {
   //   if (statusCheckIn === 200) {
@@ -47,8 +43,9 @@ function CheckIn(props) {
   }
   const finishReport = (data) => {
     props.reportInlateLeaveEarly(data.Reason)
+    props.checkIn();
   }
-  const reasonRef = useRef(null);
+  console.log(props.statusCheckIn)
   return (
     <div className="check-in">
       <div className='total-content-check-in'>
@@ -59,13 +56,13 @@ function CheckIn(props) {
           <p> Cười tươi một cái lĩnh tình ăn chơi</p>
         </div>
         <button className="btn btn-checkin" onClick={letCheckIn}>Start</button>
-        {/* // */}
+        {/* /modal/ */}
         <div>
           <Modal isOpen={modal} toggle={toggle} className={className}>
             <form onSubmit={handleSubmit(finishReport)}>
               <ModalHeader toggle={toggle}>Why are you late for work ?</ModalHeader>
               <ModalBody>
-                <Field ref={reasonRef}
+                <Field
                   id='Reason'
                   label='Reason'
                   className="Reason"
@@ -87,7 +84,7 @@ function CheckIn(props) {
             </form>
           </Modal>
         </div>
-        {/* // */}
+        {/* /modal/ */}
       </div>
     </div>
   );
@@ -95,16 +92,13 @@ function CheckIn(props) {
 
 const mapStateToProps = (state) => {
   return {
-    currentUser: state.currentUser,
     statusCheckIn: state.statusCheckIn,
-    errorCode: state.errorCode
   }
 }
 const mapDispatchToProps = (dispatch) => {
   return {
     checkIn: () => { dispatch(actions.checkIn()) },
     setStatusCheckIn: (data) => { dispatch(actions.setStatusCheckIn(data)) },
-    getInfoCurrentUser: () => { dispatch(actions.getInfoCurrentUser()) },
     reportInlateLeaveEarly: (reason) => { dispatch(actions.reportInlateLeaveEarly({ reason: reason })) }
   }
 }

@@ -25,7 +25,6 @@ function Timesheets(props) {
     array = _.filter(staffTimeSheet.data, n => moment(n.end_at, "hh:mm").isBefore(moment('17:00', "HH:mm")))
   }
   useEffect(() => {
-    props.getInfoCurrentUser();
     props.getAllUser();
     // eslint-disable-next-line
   }, []);
@@ -165,7 +164,6 @@ function Timesheets(props) {
 
 const mapStatetoProps = (state) => {
   return {
-    currentUser: state.currentUser,
     allUser: state.allUser,
     staffTimeSheet: state.staffTimeSheet,
     dateRangePicker: state.dateRangePicker
@@ -173,7 +171,6 @@ const mapStatetoProps = (state) => {
 }
 const mapDispatchToProps = (dispatch) => {
   return {
-    getInfoCurrentUser: () => { dispatch(actions.getInfoCurrentUser()) },
     getAllUser: () => { dispatch(actions.getAllUser()) },
     getStaffTimeSheetByAdmin: (date, id) => { dispatch(actions.getStaffTimeSheetByAdmin({ date: date, id: id })) },
   }

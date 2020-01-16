@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, Input } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, Input, Pagination, PaginationItem, PaginationLink, UncontrolledPopover, PopoverHeader, PopoverBody } from 'reactstrap';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions/index';
 import moment from 'moment'
@@ -9,10 +9,14 @@ import _ from 'lodash'
 import DateRangePicker from '../../DateRangePicker'
 import { SingleDatePicker } from "react-dates";
 import "react-dates/lib/css/_datepicker.css";
+import { isInclusivelyBeforeDay } from 'react-dates';
+import { IoIosSearch } from 'react-icons/io';
+import './staffTimeSheet.scss'
 
 function Timesheets(props) {
   const { staffTimeSheet, dateRangePicker, className } = props;
   const [type, setType] = useState('All');
+  console.log(staffTimeSheet)
   let array = [];
   if (type === 'All') {
     array = staffTimeSheet.data;
@@ -24,10 +28,6 @@ function Timesheets(props) {
     array = _.filter(staffTimeSheet.data, n => moment(n.end_at, "hh:mm").isBefore(moment('17:00', "HH:mm")))
   }
   useEffect(() => {
-    props.getInfoCurrentUser();
-    // eslint-disable-next-line
-  }, []);
-  useEffect(() => {
     props.getStaffTimeSheet(dateRangePicker);
     // eslint-disable-next-line
   }, [dateRangePicker]);
@@ -36,9 +36,6 @@ function Timesheets(props) {
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
   //code modal
-  //code SingleDatePicker
-  const [date, setDate] = useState(moment().subtract(1, 'days'));
-  const [focused, setFocused] = useState(false);
   const selectDate = (date) => {
     if (listDayOff === '') {
       setListDayOff(`${listDayOff}${date.format('DD/MM/YYYY')}`) //nếu chuỗi rỗng thì đẩy thêm ngày vào
@@ -61,14 +58,35 @@ function Timesheets(props) {
       }
     }
   }
-  //code SingleDatePicker
   //code call api offSet
   const [daySelect, setDaySelect] = useState('');
   const letOffSet = () => {
-    props.offSet(daySelect,_.split(listDayOff, ','))
+    props.offSet(daySelect, _.split(listDayOff, ','))
     // toggle();
   }
   //code call api offSet
+  //code SingleDatePicker
+  const [date, setDate] = useState(moment());
+  const [focused, setFocused] = useState(false);
+  //code SingleDatePicker
+  //code phân trang
+  const [inputValue, setInputValue] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [arrayPage, setArrayPage] = useState([1, 2, 3, 4, 5]);
+  let lessThanFive = []; // array list Page khi total_page <= 5
+  if (staffTimeSheet.statistic !== undefined && Number(staffTimeSheet.statistic.total_page) <= 5) {
+    for (let i = 1; i <= Number(staffTimeSheet.statistic.total_page); i++) {
+      lessThanFive = [...lessThanFive, i]
+    }
+  }
+
+  useEffect(() => {
+    //ceil là làm tròn lên
+    if (currentPage !== 0 && staffTimeSheet.statistic !== undefined && Number(staffTimeSheet.statistic.total_page) >= 5)
+      setArrayPage([Math.ceil(currentPage / 5) * 5 - 4, Math.ceil(currentPage / 5) * 5 - 3, Math.ceil(currentPage / 5) * 5 - 2, Math.ceil(currentPage / 5) * 5 - 1, Math.ceil(currentPage / 5) * 5])
+    // eslint-disable-next-line
+  }, [currentPage]);
+  //code phân trang
   return (
     <div>
       {array === undefined ? null
@@ -96,14 +114,27 @@ function Timesheets(props) {
                   </div>
                 </div>
                 <div className="tables-title">
-                  <div className="tables-title-item" onClick={() => setType('All')}>{`All: ${staffTimeSheet.data.length}`}</div>
-                  <div className="tables-title-item" onClick={() => setType('In late')}>{`In late: ${_.filter(staffTimeSheet.data, n => moment(n.start_at, "hh:mm").isAfter(moment('08:00', "HH:mm"))).length}`}</div>
-                  <div className="tables-title-item" onClick={() => setType('Leave early')}>{`Leave early: ${_.filter(staffTimeSheet.data, n => moment(n.end_at, "hh:mm").isBefore(moment('17:00', "HH:mm"))).length}`}</div>
-                  <div className="tables-title-item">{`Paid leave: ${_.filter(staffTimeSheet.data, n => n.status === 'paid leave').length}`}</div>
-                  <div className="tables-title-item">{`Unpaid leave: ${_.filter(staffTimeSheet.data, n => n.status === 'unpaid leave').length}`}</div>
-                  <div className="tables-title-item">{`Total work: ${_.reduce(staffTimeSheet.data, (total, item) => total + Number(item.time_work), 0)}`}</div>
-                  <div className="tables-title-item">{`Total Off: ${_.reduce(staffTimeSheet.data, (total, item) => total + Number(item.time_off), 0)}`}</div>
-                  <div className="tables-title-item">{`Total Offset: ${staffTimeSheet.statistic.total_offset}`}</div>
+                  <div className="tables-title-up">
+                    <div className="tables-title-item" onClick={() => setType('All')}>{`All: ${staffTimeSheet.data.length}`}</div>
+                    <div className="tables-title-item" onClick={() => setType('In late')}>{`In late: ${_.filter(staffTimeSheet.data, n => moment(n.start_at, "hh:mm").isAfter(moment('08:00', "HH:mm"))).length}`}</div>
+                    <div className="tables-title-item" onClick={() => setType('Leave early')}>{`Leave early: ${_.filter(staffTimeSheet.data, n => moment(n.end_at, "hh:mm").isBefore(moment('17:00', "HH:mm"))).length}`}</div>
+                    <div className="tables-title-item" onClick={() => setType('In late And Leave early')}>{`In late And Leave early: ${_.filter(staffTimeSheet.data, n => moment(n.start_at, "hh:mm").isAfter(moment('08:00', "HH:mm")) && moment(n.end_at, "hh:mm").isBefore(moment('17:00', "HH:mm"))).length}`}</div>
+                    <div className="tables-title-item">{`Total work: ${_.reduce(staffTimeSheet.data, (total, item) => total + Number(item.time_work), 0)} h`}</div>
+                    <div className="tables-title-item">{`Total Off: ${_.reduce(staffTimeSheet.data, (total, item) => total + Number(item.time_off), 0)} h`}</div>
+                    <div className="tables-title-item">{`Total Offset: ${staffTimeSheet.statistic.total_offset} h`}</div>
+                  </div>
+                  <div className="tables-title-down">
+                    {/* nghỉ cả ngày */}
+                    <div className="tables-title-item">{`Full day-off allowed and paid: ${_.filter(staffTimeSheet.data, n => n.status === 'full day-off' && n.is_allowed === true && n.is_paid === true).length}`}</div>
+                    <div className="tables-title-item">{`Full day-off has allowed no paid: ${_.filter(staffTimeSheet.data, n => n.status === 'full day-off' && n.is_allowed === true && n.is_paid === false).length}`}</div>
+                    <div className="tables-title-item">{`Full day-off no allowed: ${_.filter(staffTimeSheet.data, n => n.status === 'full day-off' && n.is_allowed === false).length}`}</div>
+                    {/* nghỉ cả ngày */}
+                    {/* nghỉ nửa ngày */}
+                    <div className="tables-title-item">{`Half day-off allowed and paid: ${_.filter(staffTimeSheet.data, n => n.status === 'half day-off' && n.is_allowed === true && n.is_paid === true).length}`}</div>
+                    <div className="tables-title-item">{`Half day-off has allowed no paid: ${_.filter(staffTimeSheet.data, n => n.status === 'half day-off' && n.is_allowed === true && n.is_paid === false).length}`}</div>
+                    <div className="tables-title-item">{`Half day-off no allowed: ${_.filter(staffTimeSheet.data, n => n.status === 'half day-off' && n.is_allowed === false).length}`}</div>
+                    {/* nghỉ nửa ngày */}
+                  </div>
                 </div>
                 {array.length === 0 ? null :
                   <div className="saffs-table-content">
@@ -198,7 +229,9 @@ function Timesheets(props) {
                                               numberOfMonths={1}
                                               displayFormat="DD-MM-YYYY"
                                               // chặn các ngày từ hôm nay đổ đi(chỉ cho chọn các ngày trong quá khứ không bao gồm cả ngày được phép làm bù)
-                                              isOutsideRange={day => moment.duration(moment().diff(day)).asDays() < 1}
+                                              isOutsideRange={day => !isInclusivelyBeforeDay(day, moment(daySelect, 'DD/MM/YYYY').subtract(1, 'days'))}
+                                              // nếu tồn tại trong listDayOff thì hight light(sáng lên) lên cho dễ nhìn
+                                              isDayHighlighted={day => _.indexOf(_.split(listDayOff, ','), day.format('DD/MM/YYYY')) !== -1}
                                               keepOpenOnDateSelect={true} //giữ cho calendar không đóng khi click xong
                                             />
                                           </div>
@@ -231,6 +264,116 @@ function Timesheets(props) {
                     </table>
                   </div>
                 }
+                <div className='Pagination'>
+                  <Pagination aria-label="Page navigation example">
+                    <PaginationItem
+                      onClick={() => setCurrentPage(1)}
+                    >
+                      <PaginationLink first />
+                    </PaginationItem>
+                    <PaginationItem
+                      onClick={() => {
+                        if (currentPage > 1)
+                          setCurrentPage(currentPage - 1)
+                      }}
+                    >
+                      <PaginationLink previous />
+                    </PaginationItem>
+                    {Number(staffTimeSheet.statistic.total_page) <= 5 ?
+                      _.map(lessThanFive, (item, index) => (
+                        <PaginationItem key={index}
+                          onClick={() => setCurrentPage(item)}
+                        >
+                          <PaginationLink
+                            className={classNames('', {
+                              currentPage: currentPage === item,
+                            })}
+                          >
+                            {item}
+                          </PaginationLink>
+                        </PaginationItem>
+                      ))
+                      :
+                      _.map(arrayPage, (item, index) => (
+                        <PaginationItem key={index}
+                          onClick={() => setCurrentPage(item)}
+                        >
+                          <PaginationLink
+                            className={classNames('', {
+                              currentPage: currentPage === item,
+                              hideMaxPage: item > Number(staffTimeSheet.statistic.total_page)
+                            })}
+                          >
+                            {item}
+                          </PaginationLink>
+                        </PaginationItem>
+                      ))
+                    }
+                    <PaginationItem
+                      id="PopoverLegacy"
+                      type="button"
+                      className={classNames('', {
+                        hideMaxPage: Number(staffTimeSheet.statistic.total_page) <= 5
+                      })}
+                    >
+                      <PaginationLink>
+                        {Math.ceil(currentPage / 5) === Math.ceil(Number(staffTimeSheet.statistic.total_page) / 5) ?
+                          <IoIosSearch />
+                          :
+                          <span>
+                            ...
+                          </span>
+                        }
+                      </PaginationLink>
+                    </PaginationItem>
+                    {/* code popover */}
+                    <UncontrolledPopover trigger="legacy" placement="bottom" target="PopoverLegacy"
+                    // onClick={()=> set}
+                    >
+                      <PopoverHeader>
+                        <p className='text-move-page'>Move Page</p>
+                      </PopoverHeader>
+                      <PopoverBody>
+                        <div className='div-move-page'>
+                          <Input
+                            placeholder="Page"
+                            className='input-page'
+                            onChange={(e) => setInputValue(Number(e.target.value))}
+                          />
+                          <button type='button' className='btn btn-success'
+                            onClick={() => setCurrentPage(inputValue)}
+                          >
+                            Go
+                          </button>
+                        </div>
+                      </PopoverBody>
+                    </UncontrolledPopover>
+                    {/* code popover */}
+                    <PaginationItem
+                      className={classNames('', {
+                        hideMaxPage: Math.ceil(currentPage / 5) === Math.ceil(Number(staffTimeSheet.statistic.total_page) / 5)
+                      })}
+                      onClick={() => setCurrentPage(Number(staffTimeSheet.statistic.total_page))}
+                    >
+                      <PaginationLink>
+                        {Number(staffTimeSheet.statistic.total_page)}
+                      </PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem
+                      onClick={() => {
+                        if (currentPage < Number(staffTimeSheet.statistic.total_page))
+                          setCurrentPage(currentPage + 1)
+                      }}
+                    >
+                      <PaginationLink next />
+                    </PaginationItem>
+                    <PaginationItem
+                      onClick={() => setCurrentPage(Number(staffTimeSheet.statistic.total_page))}
+                    >
+                      <PaginationLink last />
+                    </PaginationItem>
+                  </Pagination>
+                </div>
               </div>
             </div>
           </div>
@@ -244,14 +387,12 @@ function Timesheets(props) {
 const mapStatetoProps = (state) => {
   return {
     staffTimeSheet: state.staffTimeSheet,
-    errorCode: state.errorCode,
     dateRangePicker: state.dateRangePicker
   }
 }
 const mapDispatchToProps = (dispatch) => {
   return {
     getStaffTimeSheet: (data) => { dispatch(actions.getStaffTimeSheet(data)) },
-    getInfoCurrentUser: () => { dispatch(actions.getInfoCurrentUser()) },
     offSet: (date, for_date) => { dispatch(actions.offSet({ date: date, for_date: for_date })) }
   }
 }

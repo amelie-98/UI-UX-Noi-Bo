@@ -13,7 +13,7 @@ header.header-wrapper:before {
 }
 
 header.header-wrapper {
-    position: relative;
+  position: relative;
 }
 img#logo {
   width: 50px;
@@ -187,13 +187,22 @@ td.setting-button {
 }
 .tables-title {
   display: flex;
-  margin-top: 28px;
+  flex-direction: column;
+  margin-top: 15px;
 }
-
+.tables-title-up{
+  display: flex;
+  /* justify-content: space-between */
+}
+.tables-title-down{
+  margin: 15px 0 10px 0;
+  display: flex;
+  /* justify-content: space-between; */
+}
 .tables-title-item {
   cursor: pointer;
-  margin-right: 26px;
   font-size: 14px;
+  margin-right: 20px;
   font-family: var(--font-Roboto);
   font-weight: 600;
 }
@@ -204,7 +213,7 @@ td.setting-button {
   color: #28a745;
 }
 .saffs-table-content{
-  height: 430px;
+  height: 300px;
   overflow-x: hidden;
   overflow-y: scroll;
 }
@@ -212,5 +221,33 @@ td.setting-button {
   display: flex;
 }
 .btn-offset{
- margin-left: 10px !important;
+ margin-left: 15px !important;
 }
+.Pagination{
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+}
+.input-page{
+  width: 60px !important;
+}
+.div-move-page{
+  display: flex;
+  justify-content: space-between;
+  width: 110px;
+}
+.text-move-page{
+  text-align: center;
+  margin: 0;
+}
+.currentPage{
+  background: #8df5ecd7 !important;
+}
+.hideMaxPage{
+  display: none !important;
+}
+/* chỉnh lại chiều ngang của btn trong phân trang */
+.page-link{
+  width: 45px !important;
+}
+/* chỉnh lại chiều ngang của btn trong phân trang */

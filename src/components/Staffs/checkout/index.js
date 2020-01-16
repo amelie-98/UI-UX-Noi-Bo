@@ -19,7 +19,6 @@ function CheckOut(props) {
       startTime: moment().format('L'),
       endTime: moment().format('L')
     });
-    props.getInfoCurrentUser();
     // eslint-disable-next-line
   }, []);
   // useEffect(() => {
@@ -93,9 +92,7 @@ function CheckOut(props) {
 
 const mapStateToProps = (state) => {
   return {
-    currentUser: state.currentUser,
     statusCheckOut: state.statusCheckOut,
-    errorCode: state.errorCode,
     staffTimeSheet: state.staffTimeSheet,
   }
 }
@@ -103,7 +100,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     checkOut: () => { dispatch(actions.checkOut()) },
     setStatusCheckOut: (data) => { dispatch(actions.setStatusCheckOut(data)) },
-    getInfoCurrentUser: () => { dispatch(actions.getInfoCurrentUser()) },
     reportInlateLeaveEarly: (reason) => { dispatch(actions.reportInlateLeaveEarly({ reason: reason })) },
     getStaffTimeSheet: (data) => { dispatch(actions.getStaffTimeSheet(data)) },
   }

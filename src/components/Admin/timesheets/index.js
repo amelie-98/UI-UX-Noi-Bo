@@ -91,14 +91,27 @@ function Timesheets(props) {
             {array === undefined ? null :
               <div>
                 <div className="tables-title">
-                  <div className="tables-title-item" onClick={() => setType('All')}>{`All: ${staffTimeSheet.data.length}`}</div>
-                  <div className="tables-title-item" onClick={() => setType('In late')}>{`In late: ${_.filter(staffTimeSheet.data, n => moment(n.start_at, "hh:mm").isAfter(moment('08:00', "HH:mm"))).length}`}</div>
-                  <div className="tables-title-item" onClick={() => setType('Leave early')}>{`Leave early: ${_.filter(staffTimeSheet.data, n => moment(n.end_at, "hh:mm").isBefore(moment('17:00', "HH:mm"))).length}`}</div>
-                  <div className="tables-title-item">{`Paid leave: ${_.filter(staffTimeSheet.data, n => n.status === 'paid leave').length}`}</div>
-                  <div className="tables-title-item">{`Unpaid leave: ${_.filter(staffTimeSheet.data, n => n.status === 'unpaid leave').length}`}</div>
-                  <div className="tables-title-item">{`Total work: ${_.reduce(staffTimeSheet.data, (total, item) => total + Number(item.time_work), 0)}`}</div>
-                  <div className="tables-title-item">{`Total Off: ${_.reduce(staffTimeSheet.data, (total, item) => total + Number(item.time_off), 0)}`}</div>
-                  <div className="tables-title-item">{`Total Offset: ${staffTimeSheet.statistic.total_offset}`}</div>
+                  <div className="tables-title-up">
+                    <div className="tables-title-item" onClick={() => setType('All')}>{`All: ${staffTimeSheet.data.length}`}</div>
+                    <div className="tables-title-item" onClick={() => setType('In late')}>{`In late: ${_.filter(staffTimeSheet.data, n => moment(n.start_at, "hh:mm").isAfter(moment('08:00', "HH:mm"))).length}`}</div>
+                    <div className="tables-title-item" onClick={() => setType('Leave early')}>{`Leave early: ${_.filter(staffTimeSheet.data, n => moment(n.end_at, "hh:mm").isBefore(moment('17:00', "HH:mm"))).length}`}</div>
+                    <div className="tables-title-item" onClick={() => setType('In late And Leave early')}>{`In late And Leave early: ${_.filter(staffTimeSheet.data, n => moment(n.start_at, "hh:mm").isAfter(moment('08:00', "HH:mm")) && moment(n.end_at, "hh:mm").isBefore(moment('17:00', "HH:mm"))).length}`}</div>
+                    <div className="tables-title-item">{`Total work: ${_.reduce(staffTimeSheet.data, (total, item) => total + Number(item.time_work), 0)} h`}</div>
+                    <div className="tables-title-item">{`Total Off: ${_.reduce(staffTimeSheet.data, (total, item) => total + Number(item.time_off), 0)} h`}</div>
+                    <div className="tables-title-item">{`Total Offset: ${staffTimeSheet.statistic.total_offset} h`}</div>
+                  </div>
+                  <div className="tables-title-down">
+                    {/* nghỉ cả ngày */}
+                    <div className="tables-title-item">{`Full day-off allowed and paid: ${_.filter(staffTimeSheet.data, n => n.status === 'full day-off' && n.is_allowed === true && n.is_paid === true).length}`}</div>
+                    <div className="tables-title-item">{`Full day-off has allowed no paid: ${_.filter(staffTimeSheet.data, n => n.status === 'full day-off' && n.is_allowed === true && n.is_paid === false).length}`}</div>
+                    <div className="tables-title-item">{`Full day-off no allowed: ${_.filter(staffTimeSheet.data, n => n.status === 'full day-off' && n.is_allowed === false).length}`}</div>
+                    {/* nghỉ cả ngày */}
+                    {/* nghỉ nửa ngày */}
+                    <div className="tables-title-item">{`Half day-off allowed and paid: ${_.filter(staffTimeSheet.data, n => n.status === 'half day-off' && n.is_allowed === true && n.is_paid === true).length}`}</div>
+                    <div className="tables-title-item">{`Half day-off has allowed no paid: ${_.filter(staffTimeSheet.data, n => n.status === 'half day-off' && n.is_allowed === true && n.is_paid === false).length}`}</div>
+                    <div className="tables-title-item">{`Half day-off no allowed: ${_.filter(staffTimeSheet.data, n => n.status === 'half day-off' && n.is_allowed === false).length}`}</div>
+                    {/* nghỉ nửa ngày */}
+                  </div>
                 </div>
                 <div className="saffs-table-content">
                   <table className="table table-hover">

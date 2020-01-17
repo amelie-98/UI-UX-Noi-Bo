@@ -3,6 +3,8 @@ import axios from 'axios'
 import moment from 'moment'
 import { showLoading } from './ui'
 import { hideLoading } from './ui'
+import { toastError, toastSuccess } from '../helpers/toastHeplpers/toastHeplpers'
+import { history } from '../helpers/history/history';
 
 // post: tạo mới
 // put: ghi đè(toàn bộ) hoặc tạo mới 1 resource
@@ -19,7 +21,7 @@ export const getInfoCurrentUser = () => {
         dispatch(setCurrentUser(res.data))
       })
       .catch(function (error) {
-        console.log(error)
+        toastError(error)
       })
   }
 }
@@ -32,9 +34,11 @@ export const checkIn = () => {
     axios.post(`${base_link}checkin`, body)
       .then(function (res) {
         dispatch(setStatusCheckIn(res.status))
+        toastSuccess('Check in thành công')
+        history.push('/Timesheets')
       })
       .catch(function (error) {
-        console.log(error);
+        toastError(error)
       })
   }
 }
@@ -86,10 +90,11 @@ export const changePassWord = (data) => {
 }
 //action getStaffTimeSheet(gửi kèm date) (for only Staff)
 export const getStaffTimeSheet = (data) => {
-  console.log(data)
   const params = {
-    from_date: data.startTime,
-    to_date: data.endTime
+    from_date: data.date.startTime,
+    to_date: data.date.endTime,
+    current_page: String(data.current_page),
+    sort_date: data.sort_date
   }
   return (dispatch) => {
     dispatch(showLoading())

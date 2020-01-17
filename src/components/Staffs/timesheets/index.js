@@ -11,6 +11,7 @@ import { SingleDatePicker } from "react-dates";
 import "react-dates/lib/css/_datepicker.css";
 import { isInclusivelyBeforeDay } from 'react-dates';
 import { IoIosSearch } from 'react-icons/io';
+import { FaSortNumericDown, FaSortNumericUp } from 'react-icons/fa'
 import './staffTimeSheet.scss'
 
 function Timesheets(props) {
@@ -27,8 +28,32 @@ function Timesheets(props) {
   if (type === 'Leave early') {
     array = _.filter(staffTimeSheet.data, n => moment(n.end_at, "hh:mm").isBefore(moment('17:00', "HH:mm")))
   }
+  if (type === 'In late And Leave early') {
+    array = _.filter(staffTimeSheet.data, n => moment(n.start_at, "hh:mm").isAfter(moment('08:00', "HH:mm")) && moment(n.end_at, "hh:mm").isBefore(moment('17:00', "HH:mm")))
+  }
+  if (type === 'Full day-off allowed and paid') {
+    array = _.filter(staffTimeSheet.data, n => n.status === 'full day-off' && n.is_allowed === true && n.is_paid === true)
+  }
+  if (type === 'Full day-off has allowed no paid') {
+    array = _.filter(staffTimeSheet.data, n => n.status === 'full day-off' && n.is_allowed === true && n.is_paid === false)
+  }
+  if (type === 'Full day-off no allowed') {
+    array = _.filter(staffTimeSheet.data, n => n.status === 'full day-off' && n.is_allowed === false)
+  }
+  if (type === 'Half day-off allowed and paid') {
+    array = _.filter(staffTimeSheet.data, n => n.status === 'half day-off' && n.is_allowed === true && n.is_paid === true)
+  }
+  if (type === 'Half day-off has allowed no paid') {
+    array = _.filter(staffTimeSheet.data, n => n.status === 'half day-off' && n.is_allowed === true && n.is_paid === false)
+  }
+  if (type === 'Half day-off no allowed') {
+    array = _.filter(staffTimeSheet.data, n => n.status === 'half day-off' && n.is_allowed === false)
+  }
   useEffect(() => {
-    props.getStaffTimeSheet(dateRangePicker);
+    if (sortType === true)
+      props.getStaffTimeSheet(dateRangePicker, currentPage, 'ASC');
+    else
+      props.getStaffTimeSheet(dateRangePicker, currentPage, 'DESC');
     // eslint-disable-next-line
   }, [dateRangePicker]);
   const [listDayOff, setListDayOff] = useState('');
@@ -82,11 +107,28 @@ function Timesheets(props) {
 
   useEffect(() => {
     //ceil là làm tròn lên
-    if (currentPage !== 0 && staffTimeSheet.statistic !== undefined && Number(staffTimeSheet.statistic.total_page) >= 5)
+    if (currentPage !== 0 && staffTimeSheet.statistic !== undefined && Number(staffTimeSheet.statistic.total_page) >= 5) {
       setArrayPage([Math.ceil(currentPage / 5) * 5 - 4, Math.ceil(currentPage / 5) * 5 - 3, Math.ceil(currentPage / 5) * 5 - 2, Math.ceil(currentPage / 5) * 5 - 1, Math.ceil(currentPage / 5) * 5])
+      if (sortType === true) {
+        props.getStaffTimeSheet(dateRangePicker, currentPage, 'ASC');
+      }
+      else
+        props.getStaffTimeSheet(dateRangePicker, currentPage, 'DESC');
+    }
     // eslint-disable-next-line
   }, [currentPage]);
   //code phân trang
+  //code sort
+  const [sortType, setSortType] = useState(true);
+  // true thì gửi 'ASC' : tăng dần (mặc định) // false thì gửi 'DESC' : giảm dần
+  useEffect(() => {
+    if (sortType === true)
+      props.getStaffTimeSheet(dateRangePicker, currentPage, 'ASC');
+    else
+      props.getStaffTimeSheet(dateRangePicker, currentPage, 'DESC');
+    // eslint-disable-next-line
+  }, [sortType]);
+  //code sort
   return (
     <div>
       {array === undefined ? null
@@ -125,14 +167,14 @@ function Timesheets(props) {
                   </div>
                   <div className="tables-title-down">
                     {/* nghỉ cả ngày */}
-                    <div className="tables-title-item">{`Full day-off allowed and paid: ${_.filter(staffTimeSheet.data, n => n.status === 'full day-off' && n.is_allowed === true && n.is_paid === true).length}`}</div>
-                    <div className="tables-title-item">{`Full day-off has allowed no paid: ${_.filter(staffTimeSheet.data, n => n.status === 'full day-off' && n.is_allowed === true && n.is_paid === false).length}`}</div>
-                    <div className="tables-title-item">{`Full day-off no allowed: ${_.filter(staffTimeSheet.data, n => n.status === 'full day-off' && n.is_allowed === false).length}`}</div>
+                    <div className="tables-title-item" onClick={() => setType('Full day-off allowed and paid')}>{`Full day-off allowed and paid: ${_.filter(staffTimeSheet.data, n => n.status === 'full day-off' && n.is_allowed === true && n.is_paid === true).length}`}</div>
+                    <div className="tables-title-item" onClick={() => setType('Full day-off has allowed no paid')}>{`Full day-off has allowed no paid: ${_.filter(staffTimeSheet.data, n => n.status === 'full day-off' && n.is_allowed === true && n.is_paid === false).length}`}</div>
+                    <div className="tables-title-item" onClick={() => setType('Full day-off no allowed')}>{`Full day-off no allowed: ${_.filter(staffTimeSheet.data, n => n.status === 'full day-off' && n.is_allowed === false).length}`}</div>
                     {/* nghỉ cả ngày */}
                     {/* nghỉ nửa ngày */}
-                    <div className="tables-title-item">{`Half day-off allowed and paid: ${_.filter(staffTimeSheet.data, n => n.status === 'half day-off' && n.is_allowed === true && n.is_paid === true).length}`}</div>
-                    <div className="tables-title-item">{`Half day-off has allowed no paid: ${_.filter(staffTimeSheet.data, n => n.status === 'half day-off' && n.is_allowed === true && n.is_paid === false).length}`}</div>
-                    <div className="tables-title-item">{`Half day-off no allowed: ${_.filter(staffTimeSheet.data, n => n.status === 'half day-off' && n.is_allowed === false).length}`}</div>
+                    <div className="tables-title-item" onClick={() => setType('Half day-off allowed and paid')}>{`Half day-off allowed and paid: ${_.filter(staffTimeSheet.data, n => n.status === 'half day-off' && n.is_allowed === true && n.is_paid === true).length}`}</div>
+                    <div className="tables-title-item" onClick={() => setType('Half day-off has allowed no paid')}>{`Half day-off has allowed no paid: ${_.filter(staffTimeSheet.data, n => n.status === 'half day-off' && n.is_allowed === true && n.is_paid === false).length}`}</div>
+                    <div className="tables-title-item" onClick={() => setType('Half day-off no allowed')}>{`Half day-off no allowed: ${_.filter(staffTimeSheet.data, n => n.status === 'half day-off' && n.is_allowed === false).length}`}</div>
                     {/* nghỉ nửa ngày */}
                   </div>
                 </div>
@@ -141,7 +183,17 @@ function Timesheets(props) {
                     <table className="table table-hover">
                       <thead>
                         <tr>
-                          <th>Date</th>
+                          <th className='sort-date-timesheet'
+                            onClick={() => setSortType(!sortType)}
+                          >
+                            Date
+                            {
+                              sortType === true ?
+                                <FaSortNumericUp className='icon-sort-date' />
+                                :
+                                <FaSortNumericDown className='icon-sort-date' />
+                            }
+                          </th>
                           <th>CheckIn</th>
                           <th>CheckOut</th>
                           <th>Work</th>
@@ -252,7 +304,17 @@ function Timesheets(props) {
                       </tbody>
                       <thead>
                         <tr>
-                          <th>Date</th>
+                          <th className='sort-date-timesheet'
+                            onClick={() => setSortType(!sortType)}
+                          >
+                            Date
+                            {
+                              sortType === true ?
+                                <FaSortNumericUp className='icon-sort-date' />
+                                :
+                                <FaSortNumericDown className='icon-sort-date' />
+                            }
+                          </th>
                           <th>CheckIn</th>
                           <th>CheckOut</th>
                           <th>Work</th>
@@ -392,7 +454,7 @@ const mapStatetoProps = (state) => {
 }
 const mapDispatchToProps = (dispatch) => {
   return {
-    getStaffTimeSheet: (data) => { dispatch(actions.getStaffTimeSheet(data)) },
+    getStaffTimeSheet: (date, current_page, sort_date) => { dispatch(actions.getStaffTimeSheet({ date, current_page: current_page, sort_date: sort_date })) },
     offSet: (date, for_date) => { dispatch(actions.offSet({ date: date, for_date: for_date })) }
   }
 }

@@ -18,7 +18,7 @@ function CheckOut(props) {
     props.getStaffTimeSheet({
       startTime: moment().format('L'),
       endTime: moment().format('L')
-    });
+    }, 1, 'ASC');
     // eslint-disable-next-line
   }, []);
   // useEffect(() => {
@@ -36,7 +36,7 @@ function CheckOut(props) {
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
   const letCheckOut = () => {
-    const startTime = moment(staffTimeSheet[0].start_at, "HH:mm:ss")
+    const startTime = moment(staffTimeSheet.data[0].start_at, "HH:mm:ss")
     const endTime = moment(moment().format("HH:mm:ss"), "HH:mm:ss")
     const duration = moment.duration(endTime.diff(startTime));
     const hours = duration.asHours();
@@ -101,7 +101,7 @@ const mapDispatchToProps = (dispatch) => {
     checkOut: () => { dispatch(actions.checkOut()) },
     setStatusCheckOut: (data) => { dispatch(actions.setStatusCheckOut(data)) },
     reportInlateLeaveEarly: (reason) => { dispatch(actions.reportInlateLeaveEarly({ reason: reason })) },
-    getStaffTimeSheet: (data) => { dispatch(actions.getStaffTimeSheet(data)) },
+    getStaffTimeSheet: (date, current_page, sort_date) => { dispatch(actions.getStaffTimeSheet({ date, current_page: current_page, sort_date: sort_date })) },
   }
 }
 

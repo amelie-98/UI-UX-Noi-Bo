@@ -50,7 +50,7 @@ function CheckOut(props) {
   }
   const finishReport = (data) => {
     props.reportInlateLeaveEarly(data.Reason)
-    console.log(data)
+    props.checkOut();
   }
   return (
     <div className="check-out">

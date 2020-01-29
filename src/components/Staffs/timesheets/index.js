@@ -13,11 +13,12 @@ import { isInclusivelyBeforeDay } from 'react-dates';
 import { IoIosSearch } from 'react-icons/io';
 import { FaSortNumericDown, FaSortNumericUp } from 'react-icons/fa'
 import './staffTimeSheet.scss'
+import { toast } from 'react-toastify';
 
 function Timesheets(props) {
   const { staffTimeSheet, dateRangePicker, className } = props;
   const [type, setType] = useState('All');
-  console.log(staffTimeSheet)
+  console.log(staffTimeSheet.statistic)
   let array = [];
   if (type === 'All') {
     array = staffTimeSheet.data;
@@ -117,6 +118,7 @@ function Timesheets(props) {
     }
     // eslint-disable-next-line
   }, [currentPage]);
+  console.log(currentPage)
   //code phân trang
   //code sort
   const [sortType, setSortType] = useState(true);
@@ -403,7 +405,19 @@ function Timesheets(props) {
                             onChange={(e) => setInputValue(Number(e.target.value))}
                           />
                           <button type='button' className='btn btn-success'
-                            onClick={() => setCurrentPage(inputValue)}
+                            onClick={() => {
+                              if (inputValue > 0 && inputValue <= Number(staffTimeSheet.statistic.total_page)) {
+                                setCurrentPage(inputValue)
+                              }
+                              else {
+                                if (inputValue <= 0) {
+                                  toast.error('không được trang là 0 hoặc nhỏ hơn')
+                                }
+                                else {
+                                  toast.error(`chỉ có tối đa ${Number(staffTimeSheet.statistic.total_page)} trang`)
+                                }
+                              }
+                            }}
                           >
                             Go
                           </button>

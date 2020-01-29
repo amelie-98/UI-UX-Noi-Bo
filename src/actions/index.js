@@ -51,9 +51,11 @@ export const checkOut = () => {
     axios.post(`${base_link}checkout`, body)
       .then(function (res) {
         dispatch(setStatusCheckOut(res.status))
+        toastSuccess('Check out thành công')
+        history.push('/Timesheets')
       })
       .catch(function (error) {
-        console.log(error);
+        toastError(error)
       })
   }
 }

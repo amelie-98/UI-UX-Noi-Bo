@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, Input, Pagination, PaginationItem, PaginationLink, UncontrolledPopover, PopoverHeader, PopoverBody } from 'reactstrap';
 import { connect } from 'react-redux';
-import * as actions from '../../../actions/index';
+import * as actions from '../../../actions/staff';
 import moment from 'moment'
 import classNames from 'classnames'
 import _ from 'lodash'
@@ -12,49 +12,17 @@ import "react-dates/lib/css/_datepicker.css";
 import { isInclusivelyBeforeDay } from 'react-dates';
 import { IoIosSearch } from 'react-icons/io';
 import { FaSortNumericDown, FaSortNumericUp } from 'react-icons/fa'
+import { MdVisibility, MdVisibilityOff } from 'react-icons/md'
 import './staffTimeSheet.scss'
 import { toast } from 'react-toastify';
 
 function Timesheets(props) {
   const { staffTimeSheet, dateRangePicker, className } = props;
-  const [type, setType] = useState('All');
-  console.log(staffTimeSheet.statistic)
-  let array = [];
-  if (type === 'All') {
-    array = staffTimeSheet.data;
-  }
-  if (type === 'In late') {
-    array = _.filter(staffTimeSheet.data, n => moment(n.start_at, "hh:mm").isAfter(moment('08:00', "HH:mm")))
-  }
-  if (type === 'Leave early') {
-    array = _.filter(staffTimeSheet.data, n => moment(n.end_at, "hh:mm").isBefore(moment('17:00', "HH:mm")))
-  }
-  if (type === 'In late And Leave early') {
-    array = _.filter(staffTimeSheet.data, n => moment(n.start_at, "hh:mm").isAfter(moment('08:00', "HH:mm")) && moment(n.end_at, "hh:mm").isBefore(moment('17:00', "HH:mm")))
-  }
-  if (type === 'Full day-off allowed and paid') {
-    array = _.filter(staffTimeSheet.data, n => n.status === 'full day-off' && n.is_allowed === true && n.is_paid === true)
-  }
-  if (type === 'Full day-off has allowed no paid') {
-    array = _.filter(staffTimeSheet.data, n => n.status === 'full day-off' && n.is_allowed === true && n.is_paid === false)
-  }
-  if (type === 'Full day-off no allowed') {
-    array = _.filter(staffTimeSheet.data, n => n.status === 'full day-off' && n.is_allowed === false)
-  }
-  if (type === 'Half day-off allowed and paid') {
-    array = _.filter(staffTimeSheet.data, n => n.status === 'half day-off' && n.is_allowed === true && n.is_paid === true)
-  }
-  if (type === 'Half day-off has allowed no paid') {
-    array = _.filter(staffTimeSheet.data, n => n.status === 'half day-off' && n.is_allowed === true && n.is_paid === false)
-  }
-  if (type === 'Half day-off no allowed') {
-    array = _.filter(staffTimeSheet.data, n => n.status === 'half day-off' && n.is_allowed === false)
-  }
   useEffect(() => {
     if (sortType === true)
-      props.getStaffTimeSheet(dateRangePicker, currentPage, 'ASC');
+      props.getStaffTimeSheet(dateRangePicker, currentPage, 'ASC', type);
     else
-      props.getStaffTimeSheet(dateRangePicker, currentPage, 'DESC');
+      props.getStaffTimeSheet(dateRangePicker, currentPage, 'DESC', type);
     // eslint-disable-next-line
   }, [dateRangePicker]);
   const [listDayOff, setListDayOff] = useState('');
@@ -85,9 +53,8 @@ function Timesheets(props) {
     }
   }
   //code call api offSet
-  const [daySelect, setDaySelect] = useState('');
-  const letOffSet = () => {
-    props.offSet(daySelect, _.split(listDayOff, ','))
+  const letOffSet = (date) => {
+    props.offSet(date, _.split(listDayOff, ','))
     // toggle();
   }
   //code call api offSet
@@ -95,8 +62,18 @@ function Timesheets(props) {
   const [date, setDate] = useState(moment());
   const [focused, setFocused] = useState(false);
   //code SingleDatePicker
+  //code Change Type
+  const [type, setType] = useState('All');
+  useEffect(() => {
+    if (sortType === true)
+      props.getStaffTimeSheet(dateRangePicker, currentPage, 'ASC', type);
+    else
+      props.getStaffTimeSheet(dateRangePicker, currentPage, 'DESC', type);
+    // eslint-disable-next-line
+  }, [type]);
+  //code Change Type
   //code phân trang
-  const [inputValue, setInputValue] = useState(1);
+  const [inputValue, setInputValue] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [arrayPage, setArrayPage] = useState([1, 2, 3, 4, 5]);
   let lessThanFive = []; // array list Page khi total_page <= 5
@@ -111,29 +88,60 @@ function Timesheets(props) {
     if (currentPage !== 0 && staffTimeSheet.statistic !== undefined && Number(staffTimeSheet.statistic.total_page) >= 5) {
       setArrayPage([Math.ceil(currentPage / 5) * 5 - 4, Math.ceil(currentPage / 5) * 5 - 3, Math.ceil(currentPage / 5) * 5 - 2, Math.ceil(currentPage / 5) * 5 - 1, Math.ceil(currentPage / 5) * 5])
       if (sortType === true) {
-        props.getStaffTimeSheet(dateRangePicker, currentPage, 'ASC');
+        props.getStaffTimeSheet(dateRangePicker, currentPage, 'ASC', type);
       }
       else
-        props.getStaffTimeSheet(dateRangePicker, currentPage, 'DESC');
+        props.getStaffTimeSheet(dateRangePicker, currentPage, 'DESC', type);
     }
     // eslint-disable-next-line
   }, [currentPage]);
-  console.log(currentPage)
   //code phân trang
   //code sort
   const [sortType, setSortType] = useState(true);
   // true thì gửi 'ASC' : tăng dần (mặc định) // false thì gửi 'DESC' : giảm dần
   useEffect(() => {
     if (sortType === true)
-      props.getStaffTimeSheet(dateRangePicker, currentPage, 'ASC');
+      props.getStaffTimeSheet(dateRangePicker, currentPage, 'ASC', type);
     else
-      props.getStaffTimeSheet(dateRangePicker, currentPage, 'DESC');
+      props.getStaffTimeSheet(dateRangePicker, currentPage, 'DESC', type);
     // eslint-disable-next-line
   }, [sortType]);
   //code sort
+  //code show leave
+  const [showLeave, setShowLeave] = useState(false);
+  const refShowLeave = useRef();
+  const clickOnLeaveList = () => {
+    setShowLeave(true)
+    document.addEventListener('click', clickOutSide)
+  }
+  const clickOutSide = (event) => {
+    const { target } = event;
+    if (refShowLeave.current !== null) {
+      if (!refShowLeave.current.contains(target)) {
+        setShowLeave(false)
+        document.removeEventListener('click', clickOutSide)
+      }
+    }
+  }
+  useEffect(() => {
+    return () => {
+      if (showLeave === true) {
+        setShowLeave(false)
+        document.removeEventListener('click', clickOutSide)
+      }
+    };
+    // eslint-disable-next-line
+  }, [showLeave])
+  useEffect(() => {
+    return () => {
+      document.removeEventListener('click', clickOutSide)
+    };
+    // eslint-disable-next-line
+  }, [])
+  //code show leave
   return (
     <div>
-      {array === undefined ? null
+      {staffTimeSheet.data === undefined ? null
         :
         <main>
           {/* breadcrumb */}
@@ -159,28 +167,38 @@ function Timesheets(props) {
                 </div>
                 <div className="tables-title">
                   <div className="tables-title-up">
-                    <div className="tables-title-item" onClick={() => setType('All')}>{`All: ${staffTimeSheet.data.length}`}</div>
-                    <div className="tables-title-item" onClick={() => setType('In late')}>{`In late: ${_.filter(staffTimeSheet.data, n => moment(n.start_at, "hh:mm").isAfter(moment('08:00', "HH:mm"))).length}`}</div>
-                    <div className="tables-title-item" onClick={() => setType('Leave early')}>{`Leave early: ${_.filter(staffTimeSheet.data, n => moment(n.end_at, "hh:mm").isBefore(moment('17:00', "HH:mm"))).length}`}</div>
-                    <div className="tables-title-item" onClick={() => setType('In late And Leave early')}>{`In late And Leave early: ${_.filter(staffTimeSheet.data, n => moment(n.start_at, "hh:mm").isAfter(moment('08:00', "HH:mm")) && moment(n.end_at, "hh:mm").isBefore(moment('17:00', "HH:mm"))).length}`}</div>
-                    <div className="tables-title-item">{`Total work: ${_.reduce(staffTimeSheet.data, (total, item) => total + Number(item.time_work), 0)} h`}</div>
-                    <div className="tables-title-item">{`Total Off: ${_.reduce(staffTimeSheet.data, (total, item) => total + Number(item.time_off), 0)} h`}</div>
+                    <div className="tables-title-item" onClick={() => setType('All')}>{`All: ${staffTimeSheet.statistic.all}`}</div>
+                    <div className="tables-title-item" onClick={() => setType('In late')}>{`In late: ${staffTimeSheet.statistic.in_late}`}</div>
+                    <div className="tables-title-item" onClick={() => setType('Leave early')}>{`Leave early: ${staffTimeSheet.statistic.leave_early}`}</div>
+                    <div className="tables-title-item" onClick={() => setType('In late And Leave early')}>{`In late And Leave early: ${staffTimeSheet.statistic.in_late_and_leave_early}`}</div>
+                    <div className="tables-title-item show-leave" id="PopoverLeave" onClick={clickOnLeaveList}>
+                      Leave
+                      {showLeave === true ?
+                        <MdVisibility />
+                        :
+                        <MdVisibilityOff />
+                      }
+                    </div>
+                    <div className="tables-title-item">{`Total work: ${staffTimeSheet.statistic.total_work} h`}</div>
+                    <div className="tables-title-item">{`Total Off: ${staffTimeSheet.statistic.total_off} h`}</div>
                     <div className="tables-title-item">{`Total Offset: ${staffTimeSheet.statistic.total_offset} h`}</div>
                   </div>
-                  <div className="tables-title-down">
-                    {/* nghỉ cả ngày */}
-                    <div className="tables-title-item" onClick={() => setType('Full day-off allowed and paid')}>{`Full day-off allowed and paid: ${_.filter(staffTimeSheet.data, n => n.status === 'full day-off' && n.is_allowed === true && n.is_paid === true).length}`}</div>
-                    <div className="tables-title-item" onClick={() => setType('Full day-off has allowed no paid')}>{`Full day-off has allowed no paid: ${_.filter(staffTimeSheet.data, n => n.status === 'full day-off' && n.is_allowed === true && n.is_paid === false).length}`}</div>
-                    <div className="tables-title-item" onClick={() => setType('Full day-off no allowed')}>{`Full day-off no allowed: ${_.filter(staffTimeSheet.data, n => n.status === 'full day-off' && n.is_allowed === false).length}`}</div>
-                    {/* nghỉ cả ngày */}
-                    {/* nghỉ nửa ngày */}
-                    <div className="tables-title-item" onClick={() => setType('Half day-off allowed and paid')}>{`Half day-off allowed and paid: ${_.filter(staffTimeSheet.data, n => n.status === 'half day-off' && n.is_allowed === true && n.is_paid === true).length}`}</div>
-                    <div className="tables-title-item" onClick={() => setType('Half day-off has allowed no paid')}>{`Half day-off has allowed no paid: ${_.filter(staffTimeSheet.data, n => n.status === 'half day-off' && n.is_allowed === true && n.is_paid === false).length}`}</div>
-                    <div className="tables-title-item" onClick={() => setType('Half day-off no allowed')}>{`Half day-off no allowed: ${_.filter(staffTimeSheet.data, n => n.status === 'half day-off' && n.is_allowed === false).length}`}</div>
-                    {/* nghỉ nửa ngày */}
-                  </div>
+                  <UncontrolledPopover trigger="legacy" placement="bottom" target="PopoverLeave">
+                    <div className="tables-title-down popover-body" ref={refShowLeave}>
+                      {/* nghỉ cả ngày */}
+                      <div className="tables-title-item no-margin" onClick={() => setType('Full day-off allowed and paid')}>{`Full day-off allowed and paid: ${staffTimeSheet.statistic.full_day_off_allowed_and_paid}`}</div>
+                      <div className="tables-title-item no-margin" onClick={() => setType('Full day-off has allowed no paid')}>{`Full day-off has allowed no paid: ${staffTimeSheet.statistic.full_day_off_has_allowed_no_paid}`}</div>
+                      <div className="tables-title-item no-margin" onClick={() => setType('Full day-off no allowed')}>{`Full day-off no allowed: ${staffTimeSheet.statistic.full_day_off_no_allowed}`}</div>
+                      {/* nghỉ cả ngày */}
+                      {/* nghỉ nửa ngày */}
+                      <div className="tables-title-item no-margin" onClick={() => setType('Half day-off allowed and paid')}>{`Half day-off allowed and paid: ${staffTimeSheet.statistic.half_day_off_allowed_and_paid}`}</div>
+                      <div className="tables-title-item no-margin" onClick={() => setType('Half day-off has allowed no paid')}>{`Half day-off has allowed no paid: ${staffTimeSheet.statistic.half_day_off_has_allowed_no_paid}`}</div>
+                      <div className="tables-title-item no-margin" onClick={() => setType('Half day-off no allowed')}>{`Half day-off no allowed: ${staffTimeSheet.statistic.half_day_off_no_allowed}`}</div>
+                      {/* nghỉ nửa ngày */}
+                    </div>
+                  </UncontrolledPopover>
                 </div>
-                {array.length === 0 ? null :
+                {staffTimeSheet.data.length === 0 ? null :
                   <div className="saffs-table-content">
                     <table className="table table-hover">
                       <thead>
@@ -205,7 +223,7 @@ function Timesheets(props) {
                         </tr>
                       </thead>
                       <tbody>
-                        {_.map(array, (item, index) => (
+                        {_.map(staffTimeSheet.data, (item, index) => (
                           <tr key={index}>
                             <td>{item.date}</td>
                             <td
@@ -253,10 +271,7 @@ function Timesheets(props) {
                                       < button
                                         type="button"
                                         className="btn btn-primary btn-offset"
-                                        onClick={() => {
-                                          toggle();
-                                          setDaySelect(item.date)
-                                        }}
+                                        onClick={toggle}
                                       >OffSet</button>
                                       <Modal isOpen={modal} toggle={toggle} className={className}>
                                         <ModalHeader toggle={toggle}>Modal title</ModalHeader>
@@ -282,8 +297,9 @@ function Timesheets(props) {
                                               id="your_unique_id" // PropTypes.string.isRequired,
                                               numberOfMonths={1}
                                               displayFormat="DD-MM-YYYY"
-                                              // chặn các ngày từ hôm nay đổ đi(chỉ cho chọn các ngày trong quá khứ không bao gồm cả ngày được phép làm bù)
-                                              isOutsideRange={day => !isInclusivelyBeforeDay(day, moment(daySelect, 'DD/MM/YYYY').subtract(1, 'days'))}
+                                              // chặn các ngày từ hôm chọn đổ đi(chỉ cho chọn các ngày trong quá khứ không bao gồm cả ngày được phép làm bù)
+                                              // isOutsideRange={day => console.log(Math.ceil(moment.duration(day.diff(moment('30-01-2020', 'DD/MM/YYYY'))).asDays()) > 0)}
+                                              isOutsideRange={day => !isInclusivelyBeforeDay(day, moment(item.date, 'DD/MM/YYYY').subtract(1, 'days'))}
                                               // nếu tồn tại trong listDayOff thì hight light(sáng lên) lên cho dễ nhìn
                                               isDayHighlighted={day => _.indexOf(_.split(listDayOff, ','), day.format('DD/MM/YYYY')) !== -1}
                                               keepOpenOnDateSelect={true} //giữ cho calendar không đóng khi click xong
@@ -291,7 +307,7 @@ function Timesheets(props) {
                                           </div>
                                         </ModalBody>
                                         <ModalFooter>
-                                          <Button color="primary" onClick={letOffSet} disabled={listDayOff === ''}>Finish</Button>
+                                          <Button color="primary" onClick={() => letOffSet(item.date)} disabled={listDayOff === ''}>Finish</Button>
                                           <Button color="secondary" onClick={toggle}>Cancel</Button>
                                         </ModalFooter>
                                       </Modal>
@@ -392,7 +408,6 @@ function Timesheets(props) {
                     </PaginationItem>
                     {/* code popover */}
                     <UncontrolledPopover trigger="legacy" placement="bottom" target="PopoverLegacy"
-                    // onClick={()=> set}
                     >
                       <PopoverHeader>
                         <p className='text-move-page'>Move Page</p>
@@ -405,13 +420,14 @@ function Timesheets(props) {
                             onChange={(e) => setInputValue(Number(e.target.value))}
                           />
                           <button type='button' className='btn btn-success'
+                            disabled={inputValue === 0}
                             onClick={() => {
                               if (inputValue > 0 && inputValue <= Number(staffTimeSheet.statistic.total_page)) {
                                 setCurrentPage(inputValue)
                               }
                               else {
-                                if (inputValue <= 0) {
-                                  toast.error('không được trang là 0 hoặc nhỏ hơn')
+                                if (inputValue < 0 || isNaN(inputValue)) {
+                                  toast.error(':D ???')
                                 }
                                 else {
                                   toast.error(`chỉ có tối đa ${Number(staffTimeSheet.statistic.total_page)} trang`)
@@ -468,7 +484,7 @@ const mapStatetoProps = (state) => {
 }
 const mapDispatchToProps = (dispatch) => {
   return {
-    getStaffTimeSheet: (date, current_page, sort_date) => { dispatch(actions.getStaffTimeSheet({ date, current_page: current_page, sort_date: sort_date })) },
+    getStaffTimeSheet: (date, current_page, sort_date, filter_type) => { dispatch(actions.getStaffTimeSheet({ date, current_page: current_page, sort_date: sort_date, filter_type: filter_type })) },
     offSet: (date, for_date) => { dispatch(actions.offSet({ date: date, for_date: for_date })) }
   }
 }

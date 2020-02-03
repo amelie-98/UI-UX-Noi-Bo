@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import * as actions from '../../actions/index';
+import * as actions from '../../actions/staff';
 import { connect } from 'react-redux';
 import "react-dates/initialize";
 import { DateRangePicker } from "react-dates";

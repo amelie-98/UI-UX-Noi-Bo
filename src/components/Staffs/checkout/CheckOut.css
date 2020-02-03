@@ -33,6 +33,7 @@
 }
 .date-check-out{
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   font-style: normal;
@@ -40,7 +41,9 @@
   font-size: 20px;
   line-height: 23px;
   color: #000000;
-  margin-bottom: 20px;
+}
+.sc-bdVaJa {
+  margin: 15px 0 15px 0;
 }
 .div-btn-check-out{
   display: flex;

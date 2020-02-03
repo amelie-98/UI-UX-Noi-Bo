@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import './CheckOut.css';
 import { connect } from 'react-redux';
-import * as actions from '../../../actions/index';
+import * as actions from '../../../actions/staff';
 import moment from 'moment'
 // import { history } from '../../../helpers/history/history';
 // import classNames from 'classnames';
@@ -11,6 +11,8 @@ import { compose } from 'redux';
 // import renderTextField from './FormHelper/TextField'
 import renderTextAreaField from './FormHelper/TextAreaField'
 import validate from './redux-form/validate'
+import Clock from 'react-live-clock';
+import AnalogClock from 'analog-clock-react';
 
 function CheckOut(props) {
   const { staffTimeSheet, handleSubmit, invalid, submitting, pristine } = props;
@@ -18,7 +20,7 @@ function CheckOut(props) {
     props.getStaffTimeSheet({
       startTime: moment().format('L'),
       endTime: moment().format('L')
-    }, 1, 'ASC');
+    }, 1, 'ASC', 'All');
     // eslint-disable-next-line
   }, []);
   // useEffect(() => {
@@ -40,7 +42,7 @@ function CheckOut(props) {
     const endTime = moment(moment().format("HH:mm:ss"), "HH:mm:ss")
     const duration = moment.duration(endTime.diff(startTime));
     const hours = duration.asHours();
-    if (hours >= -888) {
+    if (hours >= 8) {
       toggle();
       props.reset(); // reset lại tất cả giá trị trong form bắt nhập lại từ đầu // đây là props của redux form
     }
@@ -52,11 +54,28 @@ function CheckOut(props) {
     props.reportInlateLeaveEarly(data.Reason)
     props.checkOut();
   }
+  // code clock
+  const options = {
+    width: "200px",
+    border: true,
+    borderColor: "#248E5A",
+    baseColor: "#F8F9EF",
+    centerColor: "#F4F839",
+    handColors: {
+      second: "#4BFFD9",
+      minute: "#976A80",
+      hour: "#382F77"
+    }
+  };
+  // code clock
   return (
     <div className="check-out">
       <div className='total-content-check-out'>
         <div className='title-check-out'>Check Out</div>
-        <div className='date-check-out'>{moment().format('HH:mm DD/MM/YYYY')}</div>
+        <div className='date-check-out'>
+          <AnalogClock {...options} />
+          <Clock format={'HH:mm:ss DD/MM/YYYY'} ticking={true} timezone={'Asia/Ho_Chi_Minh'} />
+        </div>
         <button className="btn btn-checkout" onClick={letCheckOut}>Finish</button>
         <div>
           <Modal isOpen={modal} toggle={toggle} className={className}>

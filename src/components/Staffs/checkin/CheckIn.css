@@ -34,9 +34,9 @@
 }
 .date-check-in{
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 58px;
   font-style: normal;
   font-weight: normal;
   font-size: 20px;

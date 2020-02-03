@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import './CheckIn.css';
 import { connect } from 'react-redux';
-import * as actions from '../../../actions/index';
+import * as actions from '../../../actions/staff';
 import moment from 'moment'
 // import { history } from '../../../helpers/history/history';
 // import classNames from 'classnames';
@@ -11,6 +11,8 @@ import { compose } from 'redux';
 // import renderTextField from './FormHelper/TextField'
 import renderTextAreaField from './FormHelper/TextAreaField'
 import validate from './redux-form/validate'
+import Clock from 'react-live-clock';
+import AnalogClock from 'analog-clock-react';
 
 function CheckIn(props) {
   const { handleSubmit, invalid, submitting, pristine } = props;
@@ -45,16 +47,30 @@ function CheckIn(props) {
     props.reportInlateLeaveEarly(data.Reason)
     props.checkIn();
   }
-  console.log(props.statusCheckIn)
+  const options = {
+    width: "200px",
+    border: true,
+    borderColor: "#248E5A",
+    baseColor: "#F8F9EF",
+    centerColor: "#F4F839",
+    handColors: {
+      second: "#4BFFD9",
+      minute: "#976A80",
+      hour: "#382F77"
+    }
+  };
   return (
     <div className="check-in">
       <div className='total-content-check-in'>
         <div className='title-check-in'>Check In</div>
-        <div className='date-check-in'>{moment().format('HH:mm DD/MM/YYYY')}</div>
-        <div className='text-check-in'>
+        <div className='date-check-out'>
+          <AnalogClock {...options} />
+          <Clock format={'HH:mm:ss DD/MM/YYYY'} ticking={true} timezone={'Asia/Ho_Chi_Minh'} />
+        </div>
+        {/* <div className='text-check-in'>
           <p>Sáng ra nhìn thấy bạn hiền</p>
           <p> Cười tươi một cái lĩnh tình ăn chơi</p>
-        </div>
+        </div> */}
         <button className="btn btn-checkin" onClick={letCheckIn}>Start</button>
         {/* /modal/ */}
         <div>

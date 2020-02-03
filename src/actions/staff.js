@@ -96,8 +96,10 @@ export const getStaffTimeSheet = (data) => {
     from_date: data.date.startTime,
     to_date: data.date.endTime,
     current_page: String(data.current_page),
-    sort_date: data.sort_date
+    sort_date: data.sort_date,
+    filter_type: data.filter_type
   }
+  // console.log(data)
   return (dispatch) => {
     dispatch(showLoading())
     axios.get(`${base_link}currentusertimesheet`, params)
@@ -133,59 +135,6 @@ export const offSet = (data) => {
     //   });
   }
 }
-//action call Api for only Admin
-//action get All USer
-export const getAllUser = () => {
-  return (dispatch) => {
-    axios.get(`${base_link}users`)
-      .then(function (res) {
-        dispatch(setAllUser(res.data))
-      })
-      .catch(function (error) {
-        console.log(error);
-      })
-  }
-}
-//action add New Staff
-export const addNewStaff = () => {
-  return (dispatch) => {
-    // axios add New Staff
-  }
-}
-//action editStaff
-export const editStaff = () => {
-  return (dispatch) => {
-    // axios edit Staff
-  }
-}
-//action changeStatusStaff
-export const changeStatusStaff = () => {
-  return (dispatch) => {
-    // axios change Status Staff
-  }
-}
-//action get Staff Time sheet by Admin 
-export const getStaffTimeSheetByAdmin = (data) => {
-  const params = {
-    from_date: data.date.startTime,
-    to_date: data.date.endTime,
-    id: data.id
-  }
-  console.log(data)
-  return (dispatch) => {
-    dispatch(showLoading())
-    axios.get(`${base_link}usertimesheet`, params)
-      .then(function (res) {
-        dispatch(setStaffTimeSheet(res.data))
-      })
-      .catch(function (error) {
-        console.log(error);
-      })
-      .finally(function () {
-        dispatch(hideLoading())
-      });
-  }
-}
 //action save on Redux
 //save current User
 export const setCurrentUser = (data, status) => { return { type: actionTypes.setCurrentUser, data: data, status: status } }
@@ -197,8 +146,6 @@ export const setStatusCheckIn = (data) => { return { type: actionTypes.setStatus
 export const setStatusCheckOut = (data) => { return { type: actionTypes.setStatusCheckOut, data: data } }
 //save current User Time Sheet
 export const setStaffTimeSheet = (data) => { return { type: actionTypes.setStaffTimeSheet, data: data } }
-//save All User
-export const setAllUser = (data) => { return { type: actionTypes.setAllUser, data: data } }
 //save date Range Picker 
 export const setDateRangePicker = (data) => { return { type: actionTypes.setDateRangePicker, data: data } }
 //save time check in to day

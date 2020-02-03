@@ -195,9 +195,10 @@ td.setting-button {
   /* justify-content: space-between */
 }
 .tables-title-down{
-  margin: 15px 0 10px 0;
   display: flex;
-  /* justify-content: space-between; */
+  flex-direction: column;
+  justify-content: space-evenly;
+  height: 160px;
 }
 .tables-title-item {
   cursor: pointer;
@@ -257,4 +258,13 @@ td.setting-button {
 .icon-sort-date{
   font-size: 20px;
   margin-left: 10px;
+}
+.show-leave{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 55px;
+}
+.no-margin{
+  margin: 0;
 }

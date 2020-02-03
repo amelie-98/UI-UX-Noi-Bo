@@ -1,7 +1,7 @@
 import React from 'react';
 import './General.css';
 import { connect } from 'react-redux';
-import * as actions from '../../../../actions/index';
+import * as actions from '../../../../actions/staff';
 
 function General(props) {
   const currentUser = props.currentUser
